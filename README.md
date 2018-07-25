@@ -25,10 +25,11 @@ Enhance screenshot notification then you can start to edit screenshot quickly.
 
 # TO-DO
 
-Just a try to use [Nevolution app](https://play.google.com/store/apps/details?id=com.oasisfeng.nevo) to enhance notifications. I make this for my own requirement. So it won't be  for a long time.
+Just a try to use [Nevolution app](https://play.google.com/store/apps/details?id=com.oasisfeng.nevo) to enhance notifications. I make this for my own requirement. So it won't be maintained for a long time.
 
 - [x] "Edit" action
 - [x] Dismiss evolved notification after clicking "Delete" action
+- [ ] Multilanguage
 - [ ] Stable dismiss behavior
 - [ ] Settings interface
 - [ ] Support older Android version
