@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="action_delete_translations">
+        <item>Delete</item>
+        <item>删除</item>
+        <item>刪除</item>
+    </string-array>
+
+</resources>

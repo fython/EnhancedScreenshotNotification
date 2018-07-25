@@ -1,0 +1,18 @@
+<resources>
+
+    <string name="app_name">Nova - Enhanced Screenshot Notification</string>
+
+    <string name="decorator_service_title">Enhanced Screenshot Notification</string>
+    <string name="decorator_service_description">Take \"Edit\" action to all Android versions\' screenshot notifications.</string>
+
+    <string name="noti_channel_screenshot">Screenshots</string>
+    <string name="noti_channel_other">Other</string>
+    <string name="noti_channel_permission">Permissions</string>
+
+    <string name="noti_storage_permission_required_title">Storage permission required</string>
+    <string name="noti_storage_permission_required_content">To provide \"Edit\" action for new screenshot, decorator application requires storage permission. Click here to request permission.</string>
+
+    <string name="action_edit">Edit</string>
+    <string name="chooser_title_edit">Choose editor</string>
+
+</resources>

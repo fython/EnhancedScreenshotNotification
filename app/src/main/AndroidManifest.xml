@@ -1,0 +1,35 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="moe.feng.nevo.decorators.enscreenshot">
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <application
+        android:name=".DecoratorApplication"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        tools:ignore="GoogleAppIndexingWarning"
+        android:fullBackupContent="true"
+        android:allowBackup="true">
+
+        <activity android:name=".PermissionRequestActivity"
+            android:exported="false"
+            android:noHistory="true"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:theme="@style/Theme.Transparent.Full"/>
+
+        <service android:name=".ScreenshotDecorator"
+            android:permission="com.oasisfeng.nevo.permission.BIND_DECORATOR_SERVICE"
+            android:process="com.oasisfeng.nevo.decorators"
+            android:label="@string/decorator_service_title"
+            android:description="@string/decorator_service_description">
+            <intent-filter android:priority="5">
+                <action android:name="com.oasisfeng.nevo.Decorator" />
+            </intent-filter>
+            <meta-data android:name="packages" android:value="com.android.systemui" />
+        </service>
+
+    </application>
+
+</manifest>
