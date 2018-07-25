@@ -12,6 +12,19 @@
         android:fullBackupContent="true"
         android:allowBackup="true">
 
+        <activity android:name=".PreferencesActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Material.Light">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES"/>
+            </intent-filter>
+        </activity>
+
         <activity android:name=".PermissionRequestActivity"
             android:exported="false"
             android:noHistory="true"

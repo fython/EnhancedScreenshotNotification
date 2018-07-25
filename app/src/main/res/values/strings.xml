@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="app_name">Nova - Enhanced Screenshot Notification</string>
+    <string name="app_name">Nevo - Enhanced Screenshot Notification</string>
 
     <string name="decorator_service_title">Enhanced Screenshot Notification</string>
     <string name="decorator_service_description">Take \"Edit\" action to all Android versions\' screenshot notifications.</string>
@@ -13,6 +13,16 @@
     <string name="noti_storage_permission_required_content">To provide \"Edit\" action for new screenshot, decorator application requires storage permission. Click here to request permission.</string>
 
     <string name="action_edit">Edit</string>
+    <string name="action_edit_in_format">Edit in %s</string>
     <string name="chooser_title_edit">Choose editor</string>
+
+    <string name="app_preferences_title">ESN Preferences</string>
+    <string name="pref_screenshots_store_path">Screenshots store path</string>
+    <string name="pref_screenshots_store_path_summary_format">Current path: %s\n\nMostly screenshots will be saved in \"\/sdcard\/Pictures\/Screenshots\". If the default path doesn\'t match your system, you can customize it here.</string>
+    <string name="pref_preferred_editor">Preferred editor</string>
+    <string name="ask_every_time">Ask every time</string>
+    <string name="pref_preferred_editor_summary">Current select: %s\n\nClick \"Edit\" action to open preferred editor to edit screenshot directly.</string>
+    <string name="pref_hide_icon_from_launcher">Hide icon from launcher</string>
+    <string name="pref_hide_icon_from_launcher_summary">You can re-enter preferences screen from app details (Settings - All apps - \"Nevo - Enhanced Screenshot Notification\").</string>
 
 </resources>

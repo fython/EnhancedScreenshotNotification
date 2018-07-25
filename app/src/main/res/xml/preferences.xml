@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:key="screenshot_path"
+        android:title="@string/pref_screenshots_store_path"
+        android:summary="@string/pref_screenshots_store_path_summary_format"/>
+
+    <Preference
+        android:key="preferred_editor"
+        android:title="@string/pref_preferred_editor"
+        android:summary="@string/pref_preferred_editor_summary"/>
+
+    <CheckBoxPreference
+        android:key="hide_launcher_icon"
+        android:title="@string/pref_hide_icon_from_launcher"
+        android:summary="@string/pref_hide_icon_from_launcher_summary"
+        android:enabled="false"/>
+
+</PreferenceScreen>
