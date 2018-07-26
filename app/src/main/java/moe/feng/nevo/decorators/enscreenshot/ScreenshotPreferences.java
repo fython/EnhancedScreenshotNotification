@@ -2,10 +2,11 @@ package moe.feng.nevo.decorators.enscreenshot;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.text.TextUtils;
+
+import net.grandcentrix.tray.TrayPreferences;
 
 import java.io.File;
 import java.util.Objects;
@@ -25,33 +26,38 @@ public final class ScreenshotPreferences {
             new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                     "Screenshots");
 
-    private final SharedPreferences mSharedPref;
+    private static final ComponentName LAUNCH_COMPONENT_NAME =
+            ComponentName.createRelative(BuildConfig.APPLICATION_ID, ".LaunchActivity");
+
+    private final TrayPreferences mPreferences;
+    private final PackageManager mPackageManager;
 
     public ScreenshotPreferences(@NonNull Context context) {
-        mSharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        mPreferences = new TrayPreferences(context, PREF_NAME, 1);
+        mPackageManager = context.getPackageManager();
     }
 
     @NonNull
     public String getScreenshotPath() {
-        return mSharedPref.getString(KEY_SCREENSHOT_PATH,
-                DEFAULT_SCREENSHOT_PATH.getAbsolutePath());
+        return Optional.ofNullable(mPreferences.getString(KEY_SCREENSHOT_PATH, null))
+                .orElse(DEFAULT_SCREENSHOT_PATH.getAbsolutePath());
     }
 
     public Optional<ComponentName> getPreferredEditorComponentName() {
-        final String value = mSharedPref.getString(KEY_PREFERRED_EDITOR_COMPONENT, null);
+        final String value = mPreferences.getString(KEY_PREFERRED_EDITOR_COMPONENT, null);
         if (TextUtils.isEmpty(value)) {
             return Optional.empty();
         }
         return Optional.ofNullable(ComponentName.unflattenFromString(value));
     }
 
-    public boolean isPreferredEditorAvailable(@NonNull Context context) {
+    public boolean isPreferredEditorAvailable() {
         final Optional<ComponentName> cn = getPreferredEditorComponentName();
         if (cn.isPresent()) {
-            final PackageManager pm = context.getPackageManager();
             try {
                 if (Objects.equals(
-                        pm.getPackageInfo(cn.get().getPackageName(), 0).packageName,
+                        mPackageManager.getPackageInfo(
+                                cn.get().getPackageName(), 0).packageName,
                         cn.get().getPackageName())) {
                     return true;
                 }
@@ -62,14 +68,13 @@ public final class ScreenshotPreferences {
         return false;
     }
 
-    public Optional<CharSequence> getPreferredEditorTitle(@NonNull Context context) {
+    public Optional<CharSequence> getPreferredEditorTitle() {
         final Optional<ComponentName> cn = getPreferredEditorComponentName();
         if (cn.isPresent()) {
-            final PackageManager pm = context.getPackageManager();
             try {
                 return Optional.of(
-                        pm.getActivityInfo(cn.get(), PackageManager.GET_META_DATA).loadLabel(pm)
-                );
+                        mPackageManager.getActivityInfo(cn.get(), PackageManager.GET_META_DATA)
+                                .loadLabel(mPackageManager));
             } catch (PackageManager.NameNotFoundException ignored) {
 
             }
@@ -77,23 +82,33 @@ public final class ScreenshotPreferences {
         return Optional.empty();
     }
 
+    public boolean isHideLauncherIcon() {
+        return mPackageManager.getComponentEnabledSetting(LAUNCH_COMPONENT_NAME)
+                == PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
+    }
+
     public void setScreenshotPath(@Nullable String screenshotPath) {
-        final SharedPreferences.Editor editor = mSharedPref.edit();
         if (screenshotPath == null) {
-            editor.remove(KEY_SCREENSHOT_PATH);
+            mPreferences.remove(KEY_SCREENSHOT_PATH);
         } else {
-            editor.putString(KEY_SCREENSHOT_PATH, screenshotPath);
+            mPreferences.put(KEY_SCREENSHOT_PATH, screenshotPath);
         }
-        editor.apply();
     }
 
     public void setPreferredEditorComponentName(@Nullable ComponentName componentName) {
-        final SharedPreferences.Editor editor = mSharedPref.edit();
         if (componentName == null) {
-            editor.remove(KEY_PREFERRED_EDITOR_COMPONENT);
+            mPreferences.remove(KEY_PREFERRED_EDITOR_COMPONENT);
         } else {
-            editor.putString(KEY_PREFERRED_EDITOR_COMPONENT, componentName.flattenToString());
+            mPreferences.put(KEY_PREFERRED_EDITOR_COMPONENT, componentName.flattenToString());
         }
-        editor.apply();
+    }
+
+    public void setHideLauncherIcon(boolean shouldHide) {
+        mPackageManager.setComponentEnabledSetting(
+                LAUNCH_COMPONENT_NAME,
+                shouldHide ?
+                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+                        : PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
     }
 }

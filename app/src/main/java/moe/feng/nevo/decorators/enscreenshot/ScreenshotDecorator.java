@@ -176,13 +176,30 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                 intent.setDataAndType(documentUri, getMimeTypeFromFile(recentShot));
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                         | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                final PendingIntent pi = PendingIntent.getActivity(
-                        this, 0,
-                        Intent.createChooser(intent, getString(R.string.chooser_title_edit)),
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+                final PendingIntent editPendingIntent;
+                final CharSequence editActionText;
+                if (mPreferences.isPreferredEditorAvailable()) {
+                    Log.d(TAG, "Your preferred editor is available.");
+                    intent.setComponent(mPreferences.getPreferredEditorComponentName()
+                            .orElseGet(() -> { throw new IllegalArgumentException("bky"); }));
+                    editPendingIntent = PendingIntent.getActivity(
+                            this, 0,
+                            intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+                    editActionText = getString(R.string.action_edit_in_format,
+                            mPreferences.getPreferredEditorTitle().orElse("!?"));
+                } else {
+                    editPendingIntent = PendingIntent.getActivity(
+                            this, 0,
+                            Intent.createChooser(intent, getString(R.string.chooser_title_edit)),
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+                    editActionText = getString(R.string.action_edit);
+                }
+
                 final Notification.Action.Builder builder = new Notification.Action.Builder(
                         Icon.createWithResource(this, R.drawable.ic_delete_black_24dp),
-                        getString(R.string.action_edit), pi);
+                        editActionText, editPendingIntent);
                 actions[actions.length - 1] = builder.build();
                 n.actions = actions;
             }

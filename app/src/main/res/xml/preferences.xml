@@ -14,7 +14,15 @@
     <CheckBoxPreference
         android:key="hide_launcher_icon"
         android:title="@string/pref_hide_icon_from_launcher"
-        android:summary="@string/pref_hide_icon_from_launcher_summary"
-        android:enabled="false"/>
+        android:summary="@string/pref_hide_icon_from_launcher_summary"/>
+
+    <PreferenceCategory android:title="@string/pref_about">
+
+        <Preference
+            android:key="github_repo"
+            android:title="@string/pref_github_repo"
+            android:summary="@string/pref_github_repo_url"/>
+
+    </PreferenceCategory>
 
 </PreferenceScreen>
