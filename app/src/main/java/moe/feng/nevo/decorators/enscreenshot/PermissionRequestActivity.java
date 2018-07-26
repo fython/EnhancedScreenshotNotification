@@ -2,10 +2,12 @@ package moe.feng.nevo.decorators.enscreenshot;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import androidx.annotation.NonNull;
@@ -49,6 +51,11 @@ public final class PermissionRequestActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(
             int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (Arrays.stream(grantResults).allMatch(i -> i == PackageManager.PERMISSION_GRANTED)) {
+            setResult(RESULT_OK);
+        } else {
+            setResult(RESULT_CANCELED);
+        }
         finish();
     }
 }

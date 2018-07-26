@@ -1,14 +1,12 @@
 package moe.feng.nevo.decorators.enscreenshot;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -17,6 +15,7 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -32,7 +31,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
-import androidx.annotation.MainThread;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import moe.feng.nevo.decorators.enscreenshot.utils.ActionUtils;
@@ -87,9 +86,13 @@ public class PreferencesActivity extends Activity {
 
     public static class PreferencesFragment extends PreferenceFragment {
 
+        private static final String KEY_STORAGE_PERMISSION = "storage_permission";
         private static final String KEY_SCREENSHOT_PATH = "screenshot_path";
         private static final String KEY_PREFERRED_EDITOR = "preferred_editor";
 
+        private static final int REQUEST_PERMISSION = 10;
+
+        private SwitchPreference mStoragePermission;
         private Preference mScreenshotPath;
         private Preference mPreferredEditor;
         private CheckBoxPreference mHideLauncherIcon;
@@ -127,22 +130,35 @@ public class PreferencesActivity extends Activity {
 
             mPreferences = new ScreenshotPreferences(getContext());
 
+            mStoragePermission = (SwitchPreference) findPreference(KEY_STORAGE_PERMISSION);
             mScreenshotPath = findPreference(KEY_SCREENSHOT_PATH);
             mPreferredEditor = findPreference(KEY_PREFERRED_EDITOR);
             mHideLauncherIcon = (CheckBoxPreference) findPreference("hide_launcher_icon");
             final Preference githubPref = findPreference("github_repo");
 
+            updateUiStoragePermission();
             updateUiScreenshotPath();
             updateUiPreferredEditor();
             updateUiHideLauncherIcon();
 
+            mStoragePermission.setOnPreferenceChangeListener((p, o) -> {
+                final Intent intent = new Intent(getContext(), PermissionRequestActivity.class);
+                intent.putExtra(PermissionRequestActivity.EXTRA_PERMISSION_TYPE,
+                        PermissionRequestActivity.TYPE_STORAGE);
+                startActivityForResult(intent, REQUEST_PERMISSION);
+                return false;
+            });
             mScreenshotPath.setOnPreferenceClickListener(this::setupScreenshotPath);
             mPreferredEditor.setOnPreferenceClickListener(this::setupPreferredEditor);
             mHideLauncherIcon.setOnPreferenceChangeListener(this::changeHideLauncherIcon);
             githubPref.setOnPreferenceClickListener(p -> {
-                final Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(getString(R.string.pref_github_repo_url)));
-                startActivity(intent);
+                try {
+                    final Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(getString(R.string.pref_github_repo_url)));
+                    startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(getActivity(), R.string.toast_activity_not_found, Toast.LENGTH_LONG).show();
+                }
                 return true;
             });
         }
@@ -151,6 +167,7 @@ public class PreferencesActivity extends Activity {
         public void onResume() {
             getContext().registerReceiver(
                     mUpdateReceiver, new IntentFilter(ACTION_UPDATE_SETTINGS));
+            updateUiStoragePermission();
             super.onResume();
         }
 
@@ -158,6 +175,15 @@ public class PreferencesActivity extends Activity {
         public void onPause() {
             getContext().unregisterReceiver(mUpdateReceiver);
             super.onPause();
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+            if (REQUEST_PERMISSION == requestCode) {
+                if (resultCode == RESULT_OK) {
+                    updateUiStoragePermission();
+                }
+            }
         }
 
         private boolean setupScreenshotPath(Preference p) {
@@ -178,7 +204,17 @@ public class PreferencesActivity extends Activity {
             return true;
         }
 
-        @MainThread
+        private void updateUiStoragePermission() {
+            mFutures.add(CompletableFuture
+                    .supplyAsync(() -> getContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                            == PackageManager.PERMISSION_GRANTED)
+                    .whenCompleteAsync((bool, thr) -> {
+                                mStoragePermission.setChecked(bool);
+                                mStoragePermission.setEnabled(!bool);
+                            },
+                            Executors.getMainThreadExecutor()));
+        }
+
         private void updateUiScreenshotPath() {
             mFutures.add(CompletableFuture
                     .supplyAsync(mPreferences::getScreenshotPath)
@@ -188,7 +224,6 @@ public class PreferencesActivity extends Activity {
                             Executors.getMainThreadExecutor()));
         }
 
-        @MainThread
         private void updateUiPreferredEditor() {
             mFutures.add(CompletableFuture
                     .supplyAsync(mPreferences::getPreferredEditorTitle)
@@ -200,10 +235,9 @@ public class PreferencesActivity extends Activity {
                             Executors.getMainThreadExecutor()));
         }
 
-        @MainThread
         private void updateUiHideLauncherIcon() {
             mFutures.add(CompletableFuture
-                    .supplyAsync(() -> mPreferences.isHideLauncherIcon())
+                    .supplyAsync(mPreferences::isHideLauncherIcon)
                     .whenCompleteAsync((bool, thr) -> mHideLauncherIcon.setChecked(bool),
                             Executors.getMainThreadExecutor()));
         }
@@ -237,6 +271,7 @@ public class PreferencesActivity extends Activity {
             public Dialog onCreateDialog(Bundle savedInstanceState) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle(R.string.pref_screenshots_store_path);
+                @SuppressLint("InflateParams")
                 final View view = LayoutInflater.from(builder.getContext())
                         .inflate(R.layout.dialog_layout_edit_text, null);
                 mEditText = view.findViewById(android.R.id.edit);

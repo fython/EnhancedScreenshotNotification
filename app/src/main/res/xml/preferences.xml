@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <SwitchPreference
+        android:key="storage_permission"
+        android:title="@string/pref_grant_storage_permission"
+        android:summaryOff="@string/pref_grant_storage_permission_summary_off"
+        android:summaryOn="@string/pref_grant_storage_permission_summary_on"/>
+
     <Preference
         android:key="screenshot_path"
         android:title="@string/pref_screenshots_store_path"

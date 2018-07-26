@@ -4,27 +4,30 @@
     <string name="app_name">Nevo - 增强截圖通知</string>
 
     <string name="decorator_service_title">增强截圖通知</string>
-    <string name="decorator_service_description">將“編輯”操作帶到截圖通知。</string>
+    <string name="decorator_service_description">將「編輯」操作帶到截圖通知。</string>
 
     <string name="noti_channel_screenshot">截圖</string>
     <string name="noti_channel_other">其他</string>
     <string name="noti_channel_permission">權限</string>
 
     <string name="noti_storage_permission_required_title">儲存權限請求</string>
-    <string name="noti_storage_permission_required_content">爲了提供“編輯”操作給新截圖通知，增强程式需要儲存權限。點擊這裏開始授權。</string>
+    <string name="noti_storage_permission_required_content">爲了提供「編輯」操作給新截圖通知，增强程式需要儲存權限。點擊這裏開始授權。</string>
 
     <string name="action_edit">編輯</string>
     <string name="action_edit_in_format">在 %s 編輯</string>
     <string name="chooser_title_edit">選擇編輯器</string>
 
     <string name="app_preferences_title">ESN 設定</string>
+    <string name="pref_grant_storage_permission">授予儲存權限</string>
+    <string name="pref_grant_storage_permission_summary_off">爲了提供「編輯」操作給新截圖通知，增强程式需要儲存權限。</string>
+    <string name="pref_grant_storage_permission_summary_on">如果你想拒絕權限，打開應用程式詳情設定 - 權限 - 禁用「儲存空間」</string>
     <string name="pref_screenshots_store_path">截圖儲存路徑</string>
-    <string name="pref_screenshots_store_path_summary_format">當前路徑：%s\n\n大部分截圖都會存在“\/sdcard\/Pictures\/Screenshots”，如果預設路徑不適用你的作業系統，你可以在這裏自訂。</string>
+    <string name="pref_screenshots_store_path_summary_format">當前路徑：%s\n\n大部分截圖都會存在「\/sdcard\/Pictures\/Screenshots」，如果預設路徑不適用你的作業系統，你可以在這裏自訂。</string>
     <string name="pref_preferred_editor">偏好編輯器</string>
     <string name="ask_every_time">每次都詢問</string>
-    <string name="pref_preferred_editor_summary">當前選擇：%s\n\n點擊“編輯”操作直接打開你偏好的編輯器來編輯截圖。</string>
+    <string name="pref_preferred_editor_summary">當前選擇：%s\n\n點擊「編輯」操作直接打開你偏好的編輯器來編輯截圖。</string>
     <string name="pref_hide_icon_from_launcher">從桌面中隱藏</string>
-    <string name="pref_hide_icon_from_launcher_summary">你可以從程式詳情重新進入設定介面（設定 - 所有應用程式 - “Nevo - 增强截圖通知”）</string>
+    <string name="pref_hide_icon_from_launcher_summary">你可以從程式詳情重新進入設定介面（設定 - 所有應用程式 - 「Nevo - 增强截圖通知」）</string>
 
     <string name="pref_about">關於</string>
     <string name="pref_github_repo">Github 倉庫</string>
@@ -32,5 +35,7 @@
     <string name="nevolution_missing_title">需要女媧石（Nevolution）</string>
     <string name="nevolution_missing_content">你必須在使用這個增强程式前安裝女媧石，否則我們無法增强截圖通知。</string>
     <string name="go_to_google_play">去 Google Play</string>
+
+    <string name="toast_activity_not_found">沒有能處理這個操作的程式</string>
 
 </resources>
