@@ -29,4 +29,8 @@
     <string name="pref_github_repo">Github Repository</string>
     <string name="pref_github_repo_url" translatable="false">https://github.com/fython/EnhancedScreenshotNotification</string>
 
+    <string name="nevolution_missing_title">Nevolution required</string>
+    <string name="nevolution_missing_content">You have to install \"Nevolution\" before using this decorator. Without it, we cannot enhance screenshot notifications.</string>
+    <string name="go_to_google_play">Go to Google Play</string>
+
 </resources>

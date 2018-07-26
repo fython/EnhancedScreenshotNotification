@@ -9,6 +9,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -34,6 +35,7 @@ import java.util.concurrent.Future;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import moe.feng.nevo.decorators.enscreenshot.utils.ActionUtils;
 import moe.feng.nevo.decorators.enscreenshot.utils.Executors;
 
 public class PreferencesActivity extends Activity {
@@ -44,6 +46,8 @@ public class PreferencesActivity extends Activity {
     private static final String EXTRA_UPDATE_TYPE =
             BuildConfig.APPLICATION_ID + ".extra.UPDATE_TYPE";
 
+    private static final String NEVOLUTION_PACKAGE = "com.oasisfeng.nevo";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +57,32 @@ public class PreferencesActivity extends Activity {
                     .replace(android.R.id.content, new PreferencesFragment())
                     .commit();
         }
+
+        CompletableFuture.supplyAsync(() -> {
+            PackageInfo packageInfo = null;
+            try {
+                packageInfo = getPackageManager().getPackageInfo(NEVOLUTION_PACKAGE, 0);
+            } catch (PackageManager.NameNotFoundException ignored) {
+
+            }
+            return packageInfo != null && NEVOLUTION_PACKAGE.equals(packageInfo.packageName);
+        }).whenCompleteAsync((isNevoInstalled, thr) -> {
+            if (!isNevoInstalled || thr != null) {
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.nevolution_missing_title)
+                        .setMessage(R.string.nevolution_missing_content)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.go_to_google_play, (dialog, which) ->
+                                ActionUtils.viewAppInMarket(this, NEVOLUTION_PACKAGE))
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setOnDismissListener(dialog -> {
+                            if (!isFinishing()) {
+                                finish();
+                            }
+                        })
+                        .show();
+            }
+        }, Executors.getMainThreadExecutor());
     }
 
     public static class PreferencesFragment extends PreferenceFragment {
