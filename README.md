@@ -15,6 +15,7 @@ Enhance screenshot notification then you can start to edit screenshot quickly.
 
 - Android 7.0+
 - A normal Android ROM
+- [Nevolution app](https://play.google.com/store/apps/details?id=com.oasisfeng.nevo) installed.
 - Grant this app to read external storage for accessing latest screenshot.
 
 ## For developers
@@ -31,7 +32,7 @@ Just a try to use [Nevolution app](https://play.google.com/store/apps/details?id
 - [x] Dismiss evolved notification after clicking "Delete" action
 - [ ] Multilanguage
 - [ ] Stable dismiss behavior
-- [ ] Settings interface
+- [x] Settings interface
 - [ ] Support older Android version
 
 # Contact me
