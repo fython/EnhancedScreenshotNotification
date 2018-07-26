@@ -9,9 +9,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import moe.feng.nevo.decorators.enscreenshot.R;
 
-public final class ActionUtils {
+public final class IntentUtils {
 
-    private ActionUtils() {
+    private IntentUtils() {
         throw new InstantiationError();
     }
 
@@ -33,6 +33,11 @@ public final class ActionUtils {
                 }
             }
         }
+    }
+
+    public static void closeSystemDialogs(@NonNull Context context) {
+        Intent intent = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        context.sendBroadcast(intent);
     }
 
 }

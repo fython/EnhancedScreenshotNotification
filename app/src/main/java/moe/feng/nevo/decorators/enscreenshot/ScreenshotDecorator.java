@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import moe.feng.nevo.decorators.enscreenshot.utils.IntentUtils;
 
 public final class ScreenshotDecorator extends NevoDecoratorService {
 
@@ -51,8 +52,6 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
 
     private static final String ACTION_DELETE_SCREENSHOT =
             BuildConfig.APPLICATION_ID + ".action.DELETE_SCREENSHOT";
-
-    private static final Intent INTENT_DELETE_SCREENSHOT = new Intent(ACTION_DELETE_SCREENSHOT);
 
     private final BroadcastReceiver mDeleteReceiver = new BroadcastReceiver() {
         @Override
@@ -78,6 +77,8 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                     }
                 }
             }
+
+            IntentUtils.closeSystemDialogs(context);
         }
     };
 
@@ -144,7 +145,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
         for (int i = 0; i < n.actions.length; i++) {
             final Notification.Action a = n.actions[i];
             if (isDeleteActionText(this, a.title)) {
-                final Intent intent = new Intent(INTENT_DELETE_SCREENSHOT);
+                final Intent intent = new Intent(ACTION_DELETE_SCREENSHOT);
                 intent.putExtra(EXTRA_NOTIFICATION_KEY, evolving.getKey());
                 intent.putExtra(EXTRA_ORIGINAL_PENDING_INTENT, a.actionIntent);
                 final PendingIntent pi = PendingIntent.getBroadcast(

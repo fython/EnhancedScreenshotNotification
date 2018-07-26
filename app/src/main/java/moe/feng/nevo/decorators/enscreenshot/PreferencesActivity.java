@@ -34,7 +34,7 @@ import java.util.concurrent.Future;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import moe.feng.nevo.decorators.enscreenshot.utils.ActionUtils;
+import moe.feng.nevo.decorators.enscreenshot.utils.IntentUtils;
 import moe.feng.nevo.decorators.enscreenshot.utils.Executors;
 
 public class PreferencesActivity extends Activity {
@@ -72,7 +72,7 @@ public class PreferencesActivity extends Activity {
                         .setMessage(R.string.nevolution_missing_content)
                         .setCancelable(false)
                         .setPositiveButton(R.string.go_to_google_play, (dialog, which) ->
-                                ActionUtils.viewAppInMarket(this, NEVOLUTION_PACKAGE))
+                                IntentUtils.viewAppInMarket(this, NEVOLUTION_PACKAGE))
                         .setNegativeButton(android.R.string.cancel, null)
                         .setOnDismissListener(dialog -> {
                             if (!isFinishing()) {
