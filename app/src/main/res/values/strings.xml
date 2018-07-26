@@ -3,7 +3,7 @@
     <string name="app_name">Nevo - Enhanced Screenshot Notification</string>
 
     <string name="decorator_service_title">Enhanced Screenshot Notification</string>
-    <string name="decorator_service_description">Take \"Edit\" action to all Android versions\' screenshot notifications.</string>
+    <string name="decorator_service_description">Take \"Edit\" action to screenshot notifications.</string>
 
     <string name="noti_channel_screenshot">Screenshots</string>
     <string name="noti_channel_other">Other</string>

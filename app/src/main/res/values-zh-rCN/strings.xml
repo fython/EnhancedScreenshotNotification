@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Nevo - 增强截图通知</string>
+
+    <string name="decorator_service_title">增强截图通知</string>
+    <string name="decorator_service_description">将“编辑”操作带到截图通知。</string>
+
+    <string name="noti_channel_screenshot">截图</string>
+    <string name="noti_channel_other">其它</string>
+    <string name="noti_channel_permission">权限</string>
+
+    <string name="noti_storage_permission_required_title">储存权限请求</string>
+    <string name="noti_storage_permission_required_content">为了提供“编辑”操作给新截图通知，增强程序需要储存权限。点击这里开始授权。</string>
+
+    <string name="action_edit">编辑</string>
+    <string name="action_edit_in_format">在 %s 编辑</string>
+    <string name="chooser_title_edit">选择编辑器</string>
+
+    <string name="app_preferences_title">ESN 设置</string>
+    <string name="pref_screenshots_store_path">截图存储路径</string>
+    <string name="pref_screenshots_store_path_summary_format">当前路径：%s\n\n大部分截图都将会存在“\/sdcard\/Pictures\/Screenshots”，如果默认路径不适用你的系统，你可以在这里自定义。</string>
+    <string name="pref_preferred_editor">偏好编辑器</string>
+    <string name="ask_every_time">每次都询问</string>
+    <string name="pref_preferred_editor_summary">当前选择：%s\n\n点击“编辑”操作直接打开你偏好的编辑器来编辑截图。</string>
+    <string name="pref_hide_icon_from_launcher">从启动器中隐藏</string>
+    <string name="pref_hide_icon_from_launcher_summary">你可以从应用详情重新进入设置界面（设置 - 所有应用 - “Nevo - 增强截图通知”）</string>
+
+    <string name="pref_about">关于</string>
+    <string name="pref_github_repo">Github 仓库</string>
+
+    <string name="nevolution_missing_title">需要女娲石（Nevolution）</string>
+    <string name="nevolution_missing_content">你必须在使用这个增强程序前安装女娲石，否则我们没法增强截图通知。</string>
+    <string name="go_to_google_play">去 Google Play</string>
+
+</resources>
