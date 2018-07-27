@@ -1,7 +1,7 @@
 Enhanced Screenshot Notification (Nevolution Decorator)
 ====
 
-Download prebulit package from [Github releases](https://github.com/fython/EnhancedScreenshotNotification/releases)
+Download prebuilt package from [Github releases](https://github.com/fython/EnhancedScreenshotNotification/releases)
 
 # Introduction
 
@@ -36,9 +36,10 @@ Other features:
 Just a try to use [Nevolution app](https://play.google.com/store/apps/details?id=com.oasisfeng.nevo) to enhance notifications. I make this for my own requirement. So it won't be maintained for a long time.
 
 - [x] "Edit" action
-- [x] Dismiss evolved notification after clicking "Delete" action
-- [x] Multilanguage
-- [ ] Stable dismiss behavior
+- [ ] Dismiss evolved notification after clicking "Delete" action (Nevolution bug)
+- [ ] Customizable "Share" & "Edit" action
+- [x] Multi-language (Chinese supported)
+- [ ] Multi-format of "Edit in..." action text
 - [x] Settings interface
 - [ ] Support older Android version
 
