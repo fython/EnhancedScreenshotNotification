@@ -3,6 +3,8 @@ Enhanced Screenshot Notification (Nevolution Decorator)
 
 Download prebuilt package from [Github releases](https://github.com/fython/EnhancedScreenshotNotification/releases)
 
+Or you can get it from [Google Play](https://play.google.com/store/apps/details?id=moe.feng.nevo.decorators.enscreenshot)
+
 # Introduction
 
 Enhance screenshot notification then you can start to edit screenshot quickly.
@@ -14,6 +16,8 @@ Enhance screenshot notification then you can start to edit screenshot quickly.
 Other features:
 
 - Set preferred editor app
+- Show total screenshots count
+- Show new screenshot's details
 - Hide icon from launcher
 
 # Requirements
@@ -37,9 +41,9 @@ Just a try to use [Nevolution app](https://play.google.com/store/apps/details?id
 
 - [x] "Edit" action
 - [ ] Dismiss evolved notification after clicking "Delete" action (Nevolution bug)
-- [ ] Customizable "Share" & "Edit" action
+- [x] Customizable "Share" & "Edit" action
 - [x] Multi-language (Chinese supported)
-- [ ] Multi-format of "Edit in..." action text
+- [x] Multi-format of "Edit in..." action text
 - [x] Settings interface
 - [ ] Support older Android version
 
