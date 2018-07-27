@@ -11,6 +11,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.LocaleList;
 import android.preference.*;
@@ -93,6 +94,7 @@ public class PreferencesActivity extends Activity {
         private static final String KEY_EDIT_ACTION_TEXT_FORMAT = "edit_action_text_format";
         private static final String KEY_GITHUB_REPO = "github_repo";
         private static final String KEY_SHOW_SCREENSHOTS_COUNT = "show_screenshots_count";
+        private static final String KEY_SHOW_SCREENSHOT_DETAILS = "show_screenshot_details";
 
         private static final int REQUEST_PERMISSION = 10;
 
@@ -103,6 +105,7 @@ public class PreferencesActivity extends Activity {
         private CheckBoxPreference mHideLauncherIcon;
         private ListPreference mEditActionTextFormat;
         private CheckBoxPreference mShowScreenshotsCount;
+        private CheckBoxPreference mShowScreenshotDetails;
 
         private ScreenshotPreferences mPreferences;
 
@@ -144,6 +147,7 @@ public class PreferencesActivity extends Activity {
             mHideLauncherIcon = (CheckBoxPreference) findPreference(KEY_HIDE_LAUNCHER_ICON);
             mEditActionTextFormat = (ListPreference) findPreference(KEY_EDIT_ACTION_TEXT_FORMAT);
             mShowScreenshotsCount = (CheckBoxPreference) findPreference(KEY_SHOW_SCREENSHOTS_COUNT);
+            mShowScreenshotDetails = (CheckBoxPreference) findPreference(KEY_SHOW_SCREENSHOT_DETAILS);
             final Preference githubPref = findPreference(KEY_GITHUB_REPO);
 
             // TODO: Remove auto-disabled after Nevolution's bug is solved.
@@ -155,6 +159,11 @@ public class PreferencesActivity extends Activity {
             updateUiPreferredEditor();
             updateUiHideLauncherIcon();
             updateUiShowScreenshotsCount();
+            updateUiShowScreenshotDetails();
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                getPreferenceScreen().removePreference(findPreference("notification_settings"));
+            }
 
             mActionAfterSharing.setOnPreferenceChangeListener((p, o) -> {
                 mPreferences.setShareEvolveType(Integer.valueOf((String) o));
@@ -174,6 +183,10 @@ public class PreferencesActivity extends Activity {
             });
             mShowScreenshotsCount.setOnPreferenceChangeListener((p, o) -> {
                 mPreferences.setShowScreenshotsCount((boolean) o);
+                return true;
+            });
+            mShowScreenshotDetails.setOnPreferenceChangeListener((p, o) -> {
+                mPreferences.setShowScreenshotDetails((boolean) o);
                 return true;
             });
             mScreenshotPath.setOnPreferenceClickListener(this::setupScreenshotPath);
@@ -314,6 +327,10 @@ public class PreferencesActivity extends Activity {
 
         private void updateUiShowScreenshotsCount() {
             mShowScreenshotsCount.setChecked(mPreferences.isShowScreenshotsCount());
+        }
+
+        private void updateUiShowScreenshotDetails() {
+            mShowScreenshotDetails.setChecked(mPreferences.isShowScreenshotDetails());
         }
 
         @Override

@@ -36,6 +36,7 @@ public final class ScreenshotPreferences {
     private static final String KEY_SHARE_EVOLVE_TYPE = "share_evolve_type";
     private static final String KEY_EDIT_ACTION_TEXT_FORMAT = "edit_action_text_format";
     private static final String KEY_SHOW_SCREENSHOTS_COUNT = "show_screenshots_count";
+    private static final String KEY_SHOW_SCREENSHOT_DETAILS = "show_screenshot_details";
 
     private static final File DEFAULT_SCREENSHOT_PATH =
             new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
@@ -117,6 +118,10 @@ public final class ScreenshotPreferences {
         return mPreferences.getBoolean(KEY_SHOW_SCREENSHOTS_COUNT, false);
     }
 
+    public boolean isShowScreenshotDetails() {
+        return mPreferences.getBoolean(KEY_SHOW_SCREENSHOT_DETAILS, false);
+    }
+
     public void setScreenshotPath(@Nullable String screenshotPath) {
         if (screenshotPath == null) {
             mPreferences.remove(KEY_SCREENSHOT_PATH);
@@ -152,5 +157,9 @@ public final class ScreenshotPreferences {
 
     public void setShowScreenshotsCount(boolean bool) {
         mPreferences.put(KEY_SHOW_SCREENSHOTS_COUNT, bool);
+    }
+
+    public void setShowScreenshotDetails(boolean bool) {
+        mPreferences.put(KEY_SHOW_SCREENSHOT_DETAILS, bool);
     }
 }

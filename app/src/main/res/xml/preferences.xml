@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--suppress AndroidElementNotAllowed -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
@@ -6,6 +7,13 @@
             android:title="@string/pref_grant_storage_permission"
             android:summaryOff="@string/pref_grant_storage_permission_summary_off"
             android:summaryOn="@string/pref_grant_storage_permission_summary_on"/>
+
+    <Preference android:key="notification_settings" android:title="@string/pref_notification_settings">
+        <intent android:action="android.settings.CHANNEL_NOTIFICATION_SETTINGS">
+            <extra android:name="android.provider.extra.APP_PACKAGE" android:value="com.oasisfeng.nevo"/>
+            <extra android:name="android.provider.extra.CHANNEL_ID" android:value="com.android.systemui:screenshot"/>
+        </intent>
+    </Preference>
 
     <PreferenceCategory android:title="@string/category_share_action">
 
@@ -43,6 +51,11 @@
                 android:key="show_screenshots_count"
                 android:title="@string/pref_show_screenshots_count"
                 android:summary="@string/pref_show_screenshots_count_summary"/>
+
+        <CheckBoxPreference
+                android:key="show_screenshot_details"
+                android:title="@string/pref_show_screenshot_details"
+                android:summary="@string/pref_show_screenshot_details_summary"/>
 
         <CheckBoxPreference
                 android:key="hide_launcher_icon"

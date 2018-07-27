@@ -12,12 +12,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
 import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
@@ -137,7 +139,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             final NotificationChannel otherChannel = new NotificationChannel(
                     CHANNEL_ID_OTHER,
                     getString(R.string.noti_channel_other),
-                    NotificationManager.IMPORTANCE_HIGH
+                    NotificationManager.IMPORTANCE_DEFAULT
             );
             screenshotChannel.setSound(Uri.EMPTY, new AudioAttributes.Builder().build());
             screenshotChannel.enableLights(true);
@@ -152,12 +154,14 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             e.printStackTrace();
         }
 
+        // Register action receivers
         registerReceiver(mShareReceiver, new IntentFilter(ACTION_SHARE_SCREENSHOT));
         registerReceiver(mDeleteReceiver, new IntentFilter(ACTION_DELETE_SCREENSHOT));
     }
 
     @Override
     public void onDestroy() {
+        // Unregister receivers safely
         try {
             unregisterReceiver(mShareReceiver);
             unregisterReceiver(mDeleteReceiver);
@@ -172,6 +176,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
         final MutableNotification n = evolving.getNotification();
 
         if (!isScreenshotNotification(n)) {
+            // Do not apply other kinds of notifications from System UI
             Log.d(TAG, "Detect non-screenshot notification from System UI");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 n.setChannelId(CHANNEL_ID_OTHER);
@@ -189,8 +194,9 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
         for (int i = 0; i < n.actions.length; i++) {
             final Notification.Action a = n.actions[i];
             if (isDeleteActionText(this, a.title)) {
+                // Fix the behavior of delete action
                 final Intent intent = new Intent(ACTION_DELETE_SCREENSHOT);
-                // Temporary solution to dismiss evolved notification
+                // TODO: Temporary solution to dismiss evolved notification (Not working)
                 intent.putExtra(EXTRA_NOTIFICATION_KEY, String.format(Locale.ENGLISH,
                         EVOLVED_NOTIFICATION_KEY_FORMAT,
                         evolving.getId(), evolving.getPackageName(), mNevolutionUid));
@@ -202,6 +208,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                                 this, R.drawable.ic_delete_black_24dp), a.title, pi);
                 n.actions[i] = builder.build();
             } else if (isShareActionText(this, a.title)) {
+                // Evolve share action
                 if (ScreenshotPreferences.SHARE_EVOLVE_TYPE_DISMISS_AFTER_SHARING
                         == mPreferences.getShareEvolveType()) {
                     final Intent intent = new Intent(ACTION_SHARE_SCREENSHOT);
@@ -219,20 +226,42 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             }
         }
 
-        // Add edit action if available
+        // These features require storage permission.
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
             final File[] shots = new File(mPreferences.getScreenshotPath()).listFiles();
             if (shots != null && shots.length > 0) {
+                // Add screenshots count to notification
                 if (mPreferences.isShowScreenshotsCount()) {
                     n.extras.putString(Notification.EXTRA_SUB_TEXT,
                             getString(R.string.screenshots_count_format, shots.length));
                 }
 
+                // Get recent screenshot
                 final File recentShot = Arrays.stream(shots)
                         .sorted(Comparator.comparing(File::lastModified).reversed())
                         .collect(Collectors.toList())
                         .get(0);
+                final String shotMimeType = getMimeTypeFromFile(recentShot);
+
+                // Add screenshot details to notification
+                if (mPreferences.isShowScreenshotDetails()) {
+                    final String detailsFormat = getString(R.string.screenshot_details_format);
+                    final BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(recentShot.getAbsolutePath(), options);
+                    final String detailsText = String.format(
+                            detailsFormat,
+                            shotMimeType,
+                            String.valueOf(options.outWidth) + "*" + String.valueOf(options.outHeight),
+                            Formatter.formatFileSize(this, recentShot.length())
+                    );
+                    Log.d(TAG, n.extras.keySet().toString());
+                    Log.d(TAG, n.extras.toString());
+                    n.extras.putString(Notification.EXTRA_TEXT, detailsText);
+                }
+
+                // Add edit action to notification
                 // Note: I attempted to use own file provider, but receivers wouldn't start to edit
                 //       successfully. Maybe some of my code was wrong.
                 //       Whatever, getting uri from MediaStore works great.
@@ -240,7 +269,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                 final Notification.Action[] actions =
                         Arrays.copyOf(n.actions, n.actions.length + 1);
                 final Intent intent = new Intent(Intent.ACTION_EDIT);
-                intent.setDataAndType(documentUri, getMimeTypeFromFile(recentShot));
+                intent.setDataAndType(documentUri, shotMimeType);
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                         | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
