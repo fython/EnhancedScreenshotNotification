@@ -146,6 +146,9 @@ public class PreferencesActivity extends Activity {
             mShowScreenshotsCount = (CheckBoxPreference) findPreference(KEY_SHOW_SCREENSHOTS_COUNT);
             final Preference githubPref = findPreference(KEY_GITHUB_REPO);
 
+            // TODO: Remove auto-disabled after Nevolution's bug is solved.
+            mActionAfterSharing.setEnabled(BuildConfig.DEBUG);
+
             updateUiActionAfterSharing();
             updateUiStoragePermission();
             updateUiScreenshotPath();
