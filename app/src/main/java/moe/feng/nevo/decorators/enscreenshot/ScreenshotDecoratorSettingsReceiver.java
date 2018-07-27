@@ -11,7 +11,8 @@ public class ScreenshotDecoratorSettingsReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(@NonNull Context context, @Nullable Intent intent) {
-        context.startActivity(new Intent(context, PreferencesActivity.class));
+        context.startActivity(new Intent(context, PreferencesActivity.class)
+                .setAction(Intent.ACTION_APPLICATION_PREFERENCES));
         IntentUtils.closeSystemDialogs(context);
     }
 }

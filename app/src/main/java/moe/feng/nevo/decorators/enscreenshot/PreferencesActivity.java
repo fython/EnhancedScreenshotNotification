@@ -19,14 +19,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -50,6 +47,11 @@ public class PreferencesActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Intent.ACTION_APPLICATION_PREFERENCES.equals(
+                Optional.ofNullable(getIntent()).map(Intent::getAction).orElse(""))) {
+            Objects.requireNonNull(getActionBar()).setDisplayHomeAsUpEnabled(true);
+        }
 
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
@@ -82,6 +84,15 @@ public class PreferencesActivity extends Activity {
                         .show();
             }
         }, Executors.getMainThreadExecutor());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public static class PreferencesFragment extends PreferenceFragment {
