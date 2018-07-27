@@ -2,32 +2,61 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
-        android:key="storage_permission"
-        android:title="@string/pref_grant_storage_permission"
-        android:summaryOff="@string/pref_grant_storage_permission_summary_off"
-        android:summaryOn="@string/pref_grant_storage_permission_summary_on"/>
+            android:key="storage_permission"
+            android:title="@string/pref_grant_storage_permission"
+            android:summaryOff="@string/pref_grant_storage_permission_summary_off"
+            android:summaryOn="@string/pref_grant_storage_permission_summary_on"/>
 
-    <Preference
-        android:key="screenshot_path"
-        android:title="@string/pref_screenshots_store_path"
-        android:summary="@string/pref_screenshots_store_path_summary_format"/>
+    <PreferenceCategory android:title="@string/category_share_action">
 
-    <Preference
-        android:key="preferred_editor"
-        android:title="@string/pref_preferred_editor"
-        android:summary="@string/pref_preferred_editor_summary"/>
+        <ListPreference
+                android:key="action_after_sharing"
+                android:title="@string/pref_action_after_sharing"
+                android:summary="%s"
+                android:entries="@array/actions_after_sharing"
+                android:entryValues="@array/actions_after_sharing_values"
+                android:defaultValue="0"/>
 
-    <CheckBoxPreference
-        android:key="hide_launcher_icon"
-        android:title="@string/pref_hide_icon_from_launcher"
-        android:summary="@string/pref_hide_icon_from_launcher_summary"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/category_edit_action">
+
+        <Preference
+                android:key="screenshot_path"
+                android:title="@string/pref_screenshots_store_path"
+                android:summary="@string/pref_screenshots_store_path_summary_format"/>
+
+        <Preference
+                android:key="preferred_editor"
+                android:title="@string/pref_preferred_editor"
+                android:summary="@string/pref_preferred_editor_summary"/>
+
+        <ListPreference
+                android:key="edit_action_text_format"
+                android:title="@string/pref_edit_action_text_format"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/category_other">
+
+        <CheckBoxPreference
+                android:key="show_screenshots_count"
+                android:title="@string/pref_show_screenshots_count"
+                android:summary="@string/pref_show_screenshots_count_summary"/>
+
+        <CheckBoxPreference
+                android:key="hide_launcher_icon"
+                android:title="@string/pref_hide_icon_from_launcher"
+                android:summary="@string/pref_hide_icon_from_launcher_summary"/>
+
+    </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_about">
 
         <Preference
-            android:key="github_repo"
-            android:title="@string/pref_github_repo"
-            android:summary="@string/pref_github_repo_url"/>
+                android:key="github_repo"
+                android:title="@string/pref_github_repo"
+                android:summary="@string/pref_github_repo_url"/>
 
     </PreferenceCategory>
 

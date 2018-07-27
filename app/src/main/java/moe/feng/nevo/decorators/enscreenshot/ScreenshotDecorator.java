@@ -17,6 +17,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
@@ -27,6 +28,8 @@ import com.oasisfeng.nevo.sdk.NevoDecoratorService;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -38,6 +41,9 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
     private static final String TAG = ScreenshotDecorator.class.getSimpleName();
 
     private static final String TARGET_PACKAGE = "com.android.systemui";
+    private static final String NEVOLUTION_PACKAGE = "com.oasisfeng.nevo";
+
+    private static final String EVOLVED_NOTIFICATION_KEY_FORMAT = "0|com.oasisfeng.nevo|%d|E>0:%s|%d";
 
     private static final String EXTRA_NOTIFICATION_KEY =
             BuildConfig.APPLICATION_ID + ".extra.NOTIFICATION_KEY";
@@ -50,8 +56,38 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
 
     private static final int NOTIFICATION_ID_REQUEST_PERMISSION = 10;
 
+    private static final String ACTION_SHARE_SCREENSHOT =
+            BuildConfig.APPLICATION_ID + ".action.SHARE_SCREENSHOT";
     private static final String ACTION_DELETE_SCREENSHOT =
             BuildConfig.APPLICATION_ID + ".action.DELETE_SCREENSHOT";
+
+    private final BroadcastReceiver mShareReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(@NonNull Context context, @Nullable Intent intent) {
+            if (intent == null || !ACTION_SHARE_SCREENSHOT.equals(intent.getAction())) {
+                return;
+            }
+
+            final String key = intent.getStringExtra(EXTRA_NOTIFICATION_KEY);
+            cancelNotification(key);
+
+            final PendingIntent pi = intent.getParcelableExtra(EXTRA_ORIGINAL_PENDING_INTENT);
+            try {
+                pi.send();
+            } catch (PendingIntent.CanceledException e) {
+                e.printStackTrace();
+                if (isOrderedBroadcast()) {
+                    try {
+                        abortBroadcast();
+                    } catch (RuntimeException ignored) {
+
+                    }
+                }
+            }
+
+            IntentUtils.closeSystemDialogs(context);
+        }
+    };
 
     private final BroadcastReceiver mDeleteReceiver = new BroadcastReceiver() {
         @Override
@@ -61,7 +97,6 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             }
 
             final String key = intent.getStringExtra(EXTRA_NOTIFICATION_KEY);
-            // TODO: Sometimes it cannot cancel evolved notification.
             cancelNotification(key);
 
             final PendingIntent pi = intent.getParcelableExtra(EXTRA_ORIGINAL_PENDING_INTENT);
@@ -83,6 +118,8 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
     };
 
     private ScreenshotPreferences mPreferences;
+
+    private int mNevolutionUid;
 
     @Override
     protected void onConnected() {
@@ -109,13 +146,20 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                     TARGET_PACKAGE, Arrays.asList(screenshotChannel, otherChannel));
         }
 
-        final IntentFilter intentFilter = new IntentFilter(ACTION_DELETE_SCREENSHOT);
-        registerReceiver(mDeleteReceiver, intentFilter);
+        try {
+            mNevolutionUid = getPackageManager().getPackageUid(NEVOLUTION_PACKAGE, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        registerReceiver(mShareReceiver, new IntentFilter(ACTION_SHARE_SCREENSHOT));
+        registerReceiver(mDeleteReceiver, new IntentFilter(ACTION_DELETE_SCREENSHOT));
     }
 
     @Override
     public void onDestroy() {
         try {
+            unregisterReceiver(mShareReceiver);
             unregisterReceiver(mDeleteReceiver);
         } catch (Exception ignored) {
 
@@ -146,7 +190,10 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             final Notification.Action a = n.actions[i];
             if (isDeleteActionText(this, a.title)) {
                 final Intent intent = new Intent(ACTION_DELETE_SCREENSHOT);
-                intent.putExtra(EXTRA_NOTIFICATION_KEY, evolving.getKey());
+                // Temporary solution to dismiss evolved notification
+                intent.putExtra(EXTRA_NOTIFICATION_KEY, String.format(Locale.ENGLISH,
+                        EVOLVED_NOTIFICATION_KEY_FORMAT,
+                        evolving.getId(), evolving.getPackageName(), mNevolutionUid));
                 intent.putExtra(EXTRA_ORIGINAL_PENDING_INTENT, a.actionIntent);
                 final PendingIntent pi = PendingIntent.getBroadcast(
                         this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -154,7 +201,21 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                         new Notification.Action.Builder(Icon.createWithResource(
                                 this, R.drawable.ic_delete_black_24dp), a.title, pi);
                 n.actions[i] = builder.build();
-                break;
+            } else if (isShareActionText(this, a.title)) {
+                if (ScreenshotPreferences.SHARE_EVOLVE_TYPE_DISMISS_AFTER_SHARING
+                        == mPreferences.getShareEvolveType()) {
+                    final Intent intent = new Intent(ACTION_SHARE_SCREENSHOT);
+                    intent.putExtra(EXTRA_NOTIFICATION_KEY, String.format(Locale.ENGLISH,
+                            EVOLVED_NOTIFICATION_KEY_FORMAT,
+                            evolving.getId(), evolving.getPackageName(), mNevolutionUid));
+                    intent.putExtra(EXTRA_ORIGINAL_PENDING_INTENT, a.actionIntent);
+                    final PendingIntent pi = PendingIntent.getBroadcast(
+                            this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    final Notification.Action.Builder builder =
+                            new Notification.Action.Builder(Icon.createWithResource(
+                                    this, R.drawable.ic_delete_black_24dp), a.title, pi);
+                    n.actions[i] = builder.build();
+                }
             }
         }
 
@@ -163,6 +224,11 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                 == PackageManager.PERMISSION_GRANTED) {
             final File[] shots = new File(mPreferences.getScreenshotPath()).listFiles();
             if (shots != null && shots.length > 0) {
+                if (mPreferences.isShowScreenshotsCount()) {
+                    n.extras.putString(Notification.EXTRA_SUB_TEXT,
+                            getString(R.string.screenshots_count_format, shots.length));
+                }
+
                 final File recentShot = Arrays.stream(shots)
                         .sorted(Comparator.comparing(File::lastModified).reversed())
                         .collect(Collectors.toList())
@@ -188,8 +254,13 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                             this, 0,
                             intent,
                             PendingIntent.FLAG_UPDATE_CURRENT);
-                    editActionText = getString(R.string.action_edit_in_format,
-                            mPreferences.getPreferredEditorTitle().orElse("!?"));
+                    final Optional<CharSequence> editorTitle = mPreferences.getPreferredEditorTitle();
+                    final String currentFormat = mPreferences.getEditActionTextFormat();
+                    if (editorTitle.isPresent()) {
+                        editActionText = String.format(currentFormat, editorTitle.get());
+                    } else {
+                        editActionText = currentFormat.replace("%", "%%");
+                    }
                 } else {
                     editPendingIntent = PendingIntent.getActivity(
                             this, 0,
@@ -218,6 +289,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                 final String content = getString(R.string.noti_storage_permission_required_content);
                 final Notification.Builder builder = new Notification.Builder(this)
                         .setContentTitle(getString(R.string.noti_storage_permission_required_title))
+                        .setContentText(content)
                         .setStyle(new Notification.BigTextStyle().bigText(content))
                         .setSmallIcon(R.drawable.ic_assistant_white_24dp)
                         .setAutoCancel(true)
@@ -228,7 +300,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                     builder.setChannelId(CHANNEL_ID_PERMISSION);
 
                     final NotificationChannel channel = new NotificationChannel(
-                            CHANNEL_ID_PERMISSION, "Permission",
+                            CHANNEL_ID_PERMISSION, getString(R.string.noti_channel_permission),
                             NotificationManager.IMPORTANCE_LOW);
                     nm.createNotificationChannel(channel);
                 }
@@ -256,11 +328,22 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
 
     private static boolean isDeleteActionText(
             @NonNull Context context, @Nullable CharSequence text) {
-        if (text == null) {
+        if (TextUtils.isEmpty(text)) {
             return false;
         }
         final String[] possibleTranslations = context.getResources()
                 .getStringArray(R.array.action_delete_translations);
+        return Arrays.stream(possibleTranslations)
+                .anyMatch(one -> one.equalsIgnoreCase(text.toString()));
+    }
+
+    private static boolean isShareActionText(
+            @NonNull Context context, @Nullable CharSequence text) {
+        if (TextUtils.isEmpty(text)) {
+            return false;
+        }
+        final String[] possibleTranslations = context.getResources()
+                .getStringArray(R.array.action_share_translations);
         return Arrays.stream(possibleTranslations)
                 .anyMatch(one -> one.equalsIgnoreCase(text.toString()));
     }

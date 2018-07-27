@@ -4,11 +4,16 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.os.LocaleList;
 import android.text.TextUtils;
 
+import androidx.annotation.IntDef;
+import moe.feng.nevo.decorators.enscreenshot.utils.FormatUtils;
 import net.grandcentrix.tray.TrayPreferences;
 
 import java.io.File;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -17,10 +22,20 @@ import androidx.annotation.Nullable;
 
 public final class ScreenshotPreferences {
 
+    public static final int SHARE_EVOLVE_TYPE_NONE = 0;
+    public static final int SHARE_EVOLVE_TYPE_DISMISS_AFTER_SHARING = 1;
+
+    @IntDef({ SHARE_EVOLVE_TYPE_NONE, SHARE_EVOLVE_TYPE_DISMISS_AFTER_SHARING })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ShareEvolveType {}
+
     private static final String PREF_NAME = "screenshot";
 
     private static final String KEY_SCREENSHOT_PATH = "screenshot_path";
     private static final String KEY_PREFERRED_EDITOR_COMPONENT = "preferred_component";
+    private static final String KEY_SHARE_EVOLVE_TYPE = "share_evolve_type";
+    private static final String KEY_EDIT_ACTION_TEXT_FORMAT = "edit_action_text_format";
+    private static final String KEY_SHOW_SCREENSHOTS_COUNT = "show_screenshots_count";
 
     private static final File DEFAULT_SCREENSHOT_PATH =
             new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
@@ -87,6 +102,21 @@ public final class ScreenshotPreferences {
                 == PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
     }
 
+    @ShareEvolveType
+    public int getShareEvolveType() {
+        return mPreferences.getInt(KEY_SHARE_EVOLVE_TYPE, SHARE_EVOLVE_TYPE_NONE);
+    }
+
+    @NonNull
+    public String getEditActionTextFormat() {
+        return Optional.ofNullable(mPreferences.getString(KEY_EDIT_ACTION_TEXT_FORMAT, null))
+                .orElseGet(() -> FormatUtils.getEditActionTextFormats(LocaleList.getDefault()).second.get(1));
+    }
+
+    public boolean isShowScreenshotsCount() {
+        return mPreferences.getBoolean(KEY_SHOW_SCREENSHOTS_COUNT, false);
+    }
+
     public void setScreenshotPath(@Nullable String screenshotPath) {
         if (screenshotPath == null) {
             mPreferences.remove(KEY_SCREENSHOT_PATH);
@@ -110,5 +140,17 @@ public final class ScreenshotPreferences {
                         PackageManager.COMPONENT_ENABLED_STATE_DISABLED
                         : PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
+    }
+
+    public void setShareEvolveType(@ShareEvolveType int type) {
+        mPreferences.put(KEY_SHARE_EVOLVE_TYPE, type);
+    }
+
+    public void setEditActionTextFormat(@NonNull String format) {
+        mPreferences.put(KEY_EDIT_ACTION_TEXT_FORMAT, format);
+    }
+
+    public void setShowScreenshotsCount(boolean bool) {
+        mPreferences.put(KEY_SHOW_SCREENSHOTS_COUNT, bool);
     }
 }

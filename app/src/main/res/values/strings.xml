@@ -13,10 +13,11 @@
     <string name="noti_storage_permission_required_content">To provide \"Edit\" action for new screenshot, decorator application requires storage permission. Click here to request permission.</string>
 
     <string name="action_edit">Edit</string>
-    <string name="action_edit_in_format">Edit in %s</string>
     <string name="chooser_title_edit">Choose editor</string>
 
-    <string name="app_preferences_title">ESN Preferences</string>
+    <string name="category_share_action">\"Share\" action</string>
+    <string name="category_edit_action">\"Edit\" action</string>
+    <string name="category_other">Other</string>
     <string name="pref_grant_storage_permission">Grant storage permission</string>
     <string name="pref_grant_storage_permission_summary_off">To provide \"Edit\" action for new screenshot, decorator application requires storage permission.</string>
     <string name="pref_grant_storage_permission_summary_on">If you want to deny storage permission, open application details settings - Permissions - Disable \"Storage\"</string>
@@ -27,6 +28,17 @@
     <string name="pref_preferred_editor_summary">Current select: %s\n\nClick \"Edit\" action to open preferred editor to edit screenshot directly.</string>
     <string name="pref_hide_icon_from_launcher">Hide icon from launcher</string>
     <string name="pref_hide_icon_from_launcher_summary">You can re-enter preferences screen from app details (Settings - All apps - \"Nevo - Enhanced Screenshot Notification\").</string>
+    <string name="pref_action_after_sharing">Action after sharing</string>
+    <string name="action_none">None</string>
+    <string name="action_dismiss_notification_at_once">Dismiss notification at once</string>
+    <string-array name="actions_after_sharing">
+        <item>@string/action_none</item>
+        <item>@string/action_dismiss_notification_at_once</item>
+    </string-array>
+    <string name="pref_edit_action_text_format">Custom \"Edit\" action text format</string>
+    <string name="pref_show_screenshots_count">Show screenshots count</string>
+    <string name="pref_show_screenshots_count_summary">You can know how many screenshots you have taken in notification.</string>
+    <string name="screenshots_count_format">%d shots</string>
 
     <string name="pref_about">About</string>
     <string name="pref_github_repo">Github Repository</string>

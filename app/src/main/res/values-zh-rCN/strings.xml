@@ -14,10 +14,11 @@
     <string name="noti_storage_permission_required_content">为了提供“编辑”操作给新截图通知，增强程序需要存储权限。点击这里开始授权。</string>
 
     <string name="action_edit">编辑</string>
-    <string name="action_edit_in_format">在 %s 编辑</string>
     <string name="chooser_title_edit">选择编辑器</string>
 
-    <string name="app_preferences_title">ESN 设置</string>
+    <string name="category_share_action">“分享”操作</string>
+    <string name="category_edit_action">“编辑”操作</string>
+    <string name="category_other">杂项</string>
     <string name="pref_grant_storage_permission">授予存储权限</string>
     <string name="pref_grant_storage_permission_summary_off">为了提供“编辑”操作给新截图通知，增强程序需要存储权限。</string>
     <string name="pref_grant_storage_permission_summary_on">如果你想拒绝权限，打开应用详情设置 - 权限 - 禁用“存储”</string>
@@ -28,6 +29,13 @@
     <string name="pref_preferred_editor_summary">当前选择：%s\n\n点击“编辑”操作直接打开你偏好的编辑器来编辑截图。</string>
     <string name="pref_hide_icon_from_launcher">从启动器中隐藏</string>
     <string name="pref_hide_icon_from_launcher_summary">你可以从应用详情重新进入设置界面（设置 - 所有应用 - “Nevo - 增强截图通知”）</string>
+    <string name="pref_action_after_sharing">分享后的操作</string>
+    <string name="action_none">无</string>
+    <string name="action_dismiss_notification_at_once">立即消除通知</string>
+    <string name="pref_edit_action_text_format">自定义“编辑”操作文本格式</string>
+    <string name="pref_show_screenshots_count">显示屏幕截图数量</string>
+    <string name="pref_show_screenshots_count_summary">你可以从通知了解你已经截取多少张屏幕截图。</string>
+    <string name="screenshots_count_format">%d 张截图</string>
 
     <string name="pref_about">关于</string>
     <string name="pref_github_repo">Github 仓库</string>
