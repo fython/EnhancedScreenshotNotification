@@ -196,10 +196,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             if (isDeleteActionText(this, a.title)) {
                 // Fix the behavior of delete action
                 final Intent intent = new Intent(ACTION_DELETE_SCREENSHOT);
-                // TODO: Temporary solution to dismiss evolved notification (Not working)
-                intent.putExtra(EXTRA_NOTIFICATION_KEY, String.format(Locale.ENGLISH,
-                        EVOLVED_NOTIFICATION_KEY_FORMAT,
-                        evolving.getId(), evolving.getPackageName(), mNevolutionUid));
+                intent.putExtra(EXTRA_NOTIFICATION_KEY, evolving.getKey());
                 intent.putExtra(EXTRA_ORIGINAL_PENDING_INTENT, a.actionIntent);
                 final PendingIntent pi = PendingIntent.getBroadcast(
                         this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -212,9 +209,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                 if (ScreenshotPreferences.SHARE_EVOLVE_TYPE_DISMISS_AFTER_SHARING
                         == mPreferences.getShareEvolveType()) {
                     final Intent intent = new Intent(ACTION_SHARE_SCREENSHOT);
-                    intent.putExtra(EXTRA_NOTIFICATION_KEY, String.format(Locale.ENGLISH,
-                            EVOLVED_NOTIFICATION_KEY_FORMAT,
-                            evolving.getId(), evolving.getPackageName(), mNevolutionUid));
+                    intent.putExtra(EXTRA_NOTIFICATION_KEY, evolving.getKey());
                     intent.putExtra(EXTRA_ORIGINAL_PENDING_INTENT, a.actionIntent);
                     final PendingIntent pi = PendingIntent.getBroadcast(
                             this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
