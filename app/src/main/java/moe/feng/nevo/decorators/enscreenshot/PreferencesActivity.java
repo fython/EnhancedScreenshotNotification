@@ -455,7 +455,7 @@ public class PreferencesActivity extends Activity {
                 result.add(Pair.create(null, context.getString(R.string.ask_every_time)));
 
                 final Intent intent = new Intent(Intent.ACTION_EDIT);
-                intent.setType("image/*");
+                intent.setDataAndType(Uri.parse("content://"), "image/*");
                 final PackageManager pm = context.getPackageManager();
                 final List<ResolveInfo> resolve = context.getPackageManager()
                         .queryIntentActivities(intent, PackageManager.GET_META_DATA);
