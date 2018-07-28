@@ -2,6 +2,7 @@ package moe.feng.nevo.decorators.enscreenshot;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +29,8 @@ public final class PermissionRequestActivity extends Activity {
 
     static {
         PERMISSIONS_MAP.append(TYPE_STORAGE, new String[] {
-                Manifest.permission.READ_EXTERNAL_STORAGE
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
     }
 
@@ -57,5 +59,14 @@ public final class PermissionRequestActivity extends Activity {
             setResult(RESULT_CANCELED);
         }
         finish();
+    }
+
+    public static boolean checkIfPermissionTypeGranted(@NonNull Context context, int type) {
+        for (String permission : PERMISSIONS_MAP.get(type)) {
+            if (context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
     }
 }

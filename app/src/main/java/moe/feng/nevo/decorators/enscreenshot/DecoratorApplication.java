@@ -6,6 +6,8 @@ import moe.feng.nevo.decorators.enscreenshot.utils.FormatUtils;
 
 public final class DecoratorApplication extends Application {
 
+    public static final String FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".provider.files";
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

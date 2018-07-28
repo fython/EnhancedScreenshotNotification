@@ -3,6 +3,7 @@
           package="moe.feng.nevo.decorators.enscreenshot">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".DecoratorApplication"
@@ -52,6 +53,13 @@
         <receiver android:name=".ScreenshotDecoratorSettingsReceiver"
                   android:permission="com.oasisfeng.nevo.permission.BIND_DECORATOR_SERVICE"
                   android:exported="true"/>
+
+        <provider android:authorities="${applicationId}.provider.files"
+                  android:name="androidx.core.content.FileProvider"
+                  android:exported="false"
+                  android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_provider"/>
+        </provider>
 
     </application>
 

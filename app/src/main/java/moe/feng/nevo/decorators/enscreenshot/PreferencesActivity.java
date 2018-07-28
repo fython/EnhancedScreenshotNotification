@@ -161,9 +161,6 @@ public class PreferencesActivity extends Activity {
             mShowScreenshotDetails = (CheckBoxPreference) findPreference(KEY_SHOW_SCREENSHOT_DETAILS);
             final Preference githubPref = findPreference(KEY_GITHUB_REPO);
 
-            // TODO: Remove auto-disabled after Nevolution's bug is solved.
-            mActionAfterSharing.setEnabled(BuildConfig.DEBUG);
-
             updateUiActionAfterSharing();
             updateUiStoragePermission();
             updateUiScreenshotPath();
@@ -266,8 +263,8 @@ public class PreferencesActivity extends Activity {
 
         private void updateUiStoragePermission() {
             mFutures.add(CompletableFuture
-                    .supplyAsync(() -> getContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                            == PackageManager.PERMISSION_GRANTED)
+                    .supplyAsync(() -> PermissionRequestActivity
+                            .checkIfPermissionTypeGranted(getContext(), PermissionRequestActivity.TYPE_STORAGE))
                     .whenCompleteAsync((bool, thr) -> {
                                 mStoragePermission.setChecked(bool);
                                 mStoragePermission.setEnabled(!bool);

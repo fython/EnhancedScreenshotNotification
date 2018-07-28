@@ -24,8 +24,10 @@ public final class ScreenshotPreferences {
 
     public static final int SHARE_EVOLVE_TYPE_NONE = 0;
     public static final int SHARE_EVOLVE_TYPE_DISMISS_AFTER_SHARING = 1;
+    public static final int SHARE_EVOLVE_TYPE_DELETE_SCREENSHOT = 2;
 
-    @IntDef({ SHARE_EVOLVE_TYPE_NONE, SHARE_EVOLVE_TYPE_DISMISS_AFTER_SHARING })
+    @IntDef({ SHARE_EVOLVE_TYPE_NONE,
+            SHARE_EVOLVE_TYPE_DISMISS_AFTER_SHARING, SHARE_EVOLVE_TYPE_DELETE_SCREENSHOT })
     @Retention(RetentionPolicy.SOURCE)
     public @interface ShareEvolveType {}
 
