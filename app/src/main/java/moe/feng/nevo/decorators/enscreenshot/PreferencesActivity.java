@@ -411,8 +411,6 @@ public class PreferencesActivity extends Activity {
 
             private List<Pair<ComponentName, String>> mChoices;
 
-            private int selected;
-
             @Override
             public void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
@@ -427,6 +425,7 @@ public class PreferencesActivity extends Activity {
                 mChoices = buildChoicesList(getContext());
                 final Optional<ComponentName> current =
                         mPreferences.getPreferredEditorComponentName();
+                int selected = 1;
                 if (current.isPresent() && mPreferences.isPreferredEditorAvailable()) {
                     for (int i = 1; i < mChoices.size(); i++) {
                         if (current.get().equals(mChoices.get(i).first)) {
@@ -438,12 +437,12 @@ public class PreferencesActivity extends Activity {
                 builder.setSingleChoiceItems(
                         mChoices.stream().map(p -> p.second).toArray(CharSequence[]::new),
                         selected,
-                        (dialog, which) -> selected = which);
-                builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                    mPreferences.setPreferredEditorComponentName(mChoices.get(selected).first);
-                    getContext().sendBroadcast(new Intent(ACTION_UPDATE_SETTINGS)
-                            .putExtra(EXTRA_UPDATE_TYPE, KEY_PREFERRED_EDITOR));
-                });
+                        (dialog, which) -> {
+                            mPreferences.setPreferredEditorComponentName(mChoices.get(which).first);
+                            getContext().sendBroadcast(new Intent(ACTION_UPDATE_SETTINGS)
+                                    .putExtra(EXTRA_UPDATE_TYPE, KEY_PREFERRED_EDITOR));
+                            dismiss();
+                        });
                 builder.setNegativeButton(android.R.string.cancel, null);
                 return builder.create();
             }
