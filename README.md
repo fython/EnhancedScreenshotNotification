@@ -46,8 +46,9 @@ Just a try to use [Nevolution app](https://play.google.com/store/apps/details?id
 - [x] Multi-format of "Edit in..." action text
 - [x] Settings interface
 - [ ] PiP Screenshot preview (Toggle size, dismiss, delete)
-- [ ] Support older Android version
 - [ ] Hide "Edit" action for Android P users and allow them to install ENS
+- [ ] Keep previous screenshot notification and organize them
+- [ ] Support older Android version
 
 # Contact me
 
