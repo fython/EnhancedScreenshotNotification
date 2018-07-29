@@ -40,12 +40,14 @@ Other features:
 Just a try to use [Nevolution app](https://play.google.com/store/apps/details?id=com.oasisfeng.nevo) to enhance notifications. I make this for my own requirement. So it won't be maintained for a long time.
 
 - [x] "Edit" action
-- [ ] Dismiss evolved notification after clicking "Delete" action (Nevolution bug)
+- [x] Dismiss evolved notification after clicking "Delete" action
 - [x] Customizable "Share" & "Edit" action
 - [x] Multi-language (Chinese supported)
 - [x] Multi-format of "Edit in..." action text
 - [x] Settings interface
+- [ ] PiP Screenshot preview (Toggle size, dismiss, delete)
 - [ ] Support older Android version
+- [ ] Hide "Edit" action for Android P users and allow them to install ENS
 
 # Contact me
 
