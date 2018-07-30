@@ -199,9 +199,6 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
         if (!isScreenshotNotification(n)) {
             // Do not apply other kinds of notifications from System UI
             Log.d(TAG, "Detect non-screenshot notification from System UI");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                n.setChannelId(CHANNEL_ID_OTHER);
-            }
             return;
         } else {
             Log.d(TAG, "Detect screenshot notification from System UI");
