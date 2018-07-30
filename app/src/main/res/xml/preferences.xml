@@ -15,6 +15,12 @@
         </intent>
     </Preference>
 
+    <SwitchPreference
+            android:key="preview_in_floating_window"
+            android:title="@string/pref_preview_in_floating_window"
+            android:summary="@string/pref_preview_in_floating_window_summary"
+            android:defaultValue="false"/>
+
     <PreferenceCategory android:title="@string/category_share_action">
 
         <ListPreference

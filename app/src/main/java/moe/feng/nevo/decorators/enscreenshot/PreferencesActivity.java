@@ -106,6 +106,7 @@ public class PreferencesActivity extends Activity {
         private static final String KEY_GITHUB_REPO = "github_repo";
         private static final String KEY_SHOW_SCREENSHOTS_COUNT = "show_screenshots_count";
         private static final String KEY_SHOW_SCREENSHOT_DETAILS = "show_screenshot_details";
+        private static final String KEY_PREVIEW_IN_FLOATING_WINDOW = "preview_in_floating_window";
 
         private static final int REQUEST_PERMISSION = 10;
 
@@ -117,6 +118,7 @@ public class PreferencesActivity extends Activity {
         private ListPreference mEditActionTextFormat;
         private CheckBoxPreference mShowScreenshotsCount;
         private CheckBoxPreference mShowScreenshotDetails;
+        private SwitchPreference mPreviewInFloatingWindow;
 
         private ScreenshotPreferences mPreferences;
 
@@ -159,6 +161,7 @@ public class PreferencesActivity extends Activity {
             mEditActionTextFormat = (ListPreference) findPreference(KEY_EDIT_ACTION_TEXT_FORMAT);
             mShowScreenshotsCount = (CheckBoxPreference) findPreference(KEY_SHOW_SCREENSHOTS_COUNT);
             mShowScreenshotDetails = (CheckBoxPreference) findPreference(KEY_SHOW_SCREENSHOT_DETAILS);
+            mPreviewInFloatingWindow = (SwitchPreference) findPreference(KEY_PREVIEW_IN_FLOATING_WINDOW);
             final Preference githubPref = findPreference(KEY_GITHUB_REPO);
 
             updateUiActionAfterSharing();
@@ -168,11 +171,22 @@ public class PreferencesActivity extends Activity {
             updateUiHideLauncherIcon();
             updateUiShowScreenshotsCount();
             updateUiShowScreenshotDetails();
+            updatePreviewInFloatingWindow();
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 getPreferenceScreen().removePreference(findPreference("notification_settings"));
             }
 
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
+                    !getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+                mPreviewInFloatingWindow.setEnabled(false);
+                mPreviewInFloatingWindow.setSummary(R.string.pref_preview_in_floating_window_summary_unsupported);
+            }
+
+            mPreviewInFloatingWindow.setOnPreferenceChangeListener((p, o) -> {
+                mPreferences.setPreviewInFloatingWindow((boolean) o);
+                return true;
+            });
             mActionAfterSharing.setOnPreferenceChangeListener((p, o) -> {
                 mPreferences.setShareEvolveType(Integer.valueOf((String) o));
                 return true;
@@ -339,6 +353,10 @@ public class PreferencesActivity extends Activity {
 
         private void updateUiShowScreenshotDetails() {
             mShowScreenshotDetails.setChecked(mPreferences.isShowScreenshotDetails());
+        }
+
+        private void updatePreviewInFloatingWindow() {
+            mShowScreenshotDetails.setChecked(mPreferences.canPreviewInFloatingWindow());
         }
 
         @Override

@@ -38,6 +38,17 @@
                   android:taskAffinity=""
                   android:theme="@style/Theme.Transparent.Full"/>
 
+        <activity android:name=".PreviewActivity"
+                  android:resizeableActivity="true"
+                  android:supportsPictureInPicture="true"
+                  android:excludeFromRecents="true"
+                  android:noHistory="true"
+                  android:theme="@android:style/Theme.Material.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
         <service android:name=".ScreenshotDecorator"
                  android:permission="com.oasisfeng.nevo.permission.BIND_DECORATOR_SERVICE"
                  android:process="com.oasisfeng.nevo.decorators"

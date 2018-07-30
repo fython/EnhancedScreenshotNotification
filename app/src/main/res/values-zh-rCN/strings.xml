@@ -50,6 +50,10 @@
     <string name="nevolution_missing_content">你必须在使用这个增强程序前安装女娲石，否则我们没法增强截图通知。</string>
     <string name="go_to_google_play">去 Google Play</string>
 
+    <string name="pref_preview_in_floating_window">在悬浮窗口中预览</string>
+    <string name="pref_preview_in_floating_window_summary">点击截图通知以打开悬浮预览窗。</string>
+    <string name="pref_preview_in_floating_window_summary_unsupported">你的设备不支持画中画特性或内存较低。</string>
+
     <string name="toast_activity_not_found">没有能处理这个操作的应用</string>
 
 </resources>

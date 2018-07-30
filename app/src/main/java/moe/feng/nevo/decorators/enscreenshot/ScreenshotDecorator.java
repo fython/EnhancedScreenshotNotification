@@ -1,16 +1,10 @@
 package moe.feng.nevo.decorators.enscreenshot;
 
-import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
+import android.content.*;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
@@ -220,6 +214,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
         // Find out actions
         int deleteActionIndex = -1;
         int shareActionIndex = -1;
+        int editActionIndex = -1;
         for (int i = 0; i < n.actions.length; i++) {
             final Notification.Action a = n.actions[i];
             if (isDeleteActionText(this, a.title)) {
@@ -351,8 +346,33 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                 final Notification.Action.Builder builder = new Notification.Action.Builder(
                         Icon.createWithResource(this, R.drawable.ic_delete_black_24dp),
                         editActionText, editPendingIntent);
-                actions[actions.length - 1] = builder.build();
+                if (editActionIndex == -1) {
+                    editActionIndex = actions.length - 1;
+                }
+                actions[editActionIndex] = builder.build();
                 n.actions = actions;
+
+                // Replace click intent with preview intent
+                if (mPreferences.canPreviewInFloatingWindow() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    final Intent previewIntent = new Intent(intent);
+                    previewIntent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                    previewIntent.setAction(Intent.ACTION_MAIN);
+                    if (shareActionIndex != -1) {
+                        previewIntent.putExtra(PreviewActivity.EXTRA_SHARE_INTENT,
+                                actions[shareActionIndex].actionIntent);
+                    }
+                    if (deleteActionIndex != -1) {
+                        previewIntent.putExtra(PreviewActivity.EXTRA_DELETE_INTENT,
+                                actions[deleteActionIndex].actionIntent);
+                    }
+                    if (editActionIndex != -1) {
+                        previewIntent.putExtra(PreviewActivity.EXTRA_EDIT_INTENT,
+                                actions[editActionIndex].actionIntent);
+                    }
+                    previewIntent.setComponent(ComponentName.createRelative(this, ".PreviewActivity"));
+                    n.contentIntent = PendingIntent.getActivity(this, 0,
+                            previewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                }
             }
         } else {
             // Notify user for required permission
