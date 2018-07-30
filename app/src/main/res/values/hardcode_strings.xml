@@ -12,4 +12,10 @@
         <item>分享</item>
     </string-array>
 
+    <string-array name="action_edit_translations">
+        <item>Edit</item>
+        <item>编辑</item>
+        <item>編輯</item>
+    </string-array>
+
 </resources>

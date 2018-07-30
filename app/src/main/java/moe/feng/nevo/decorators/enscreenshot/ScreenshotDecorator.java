@@ -221,6 +221,8 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                 deleteActionIndex = i;
             } else if (isShareActionText(this, a.title)) {
                 shareActionIndex = i;
+            } else if (isEditActionText(this, a.title)) {
+                editActionIndex = i;
             }
         }
 
@@ -311,15 +313,17 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                 //       successfully. Maybe some of my code was wrong.
                 //       Whatever, getting uri from MediaStore works great.
                 final Uri documentUri = getImageContentUri(this, recentShot);
-                final Notification.Action[] actions =
-                        Arrays.copyOf(n.actions, n.actions.length + 1);
+                if (editActionIndex == -1) {
+                    n.actions = Arrays.copyOf(n.actions, n.actions.length + 1);
+                }
                 final Intent intent = new Intent(Intent.ACTION_EDIT);
                 intent.setDataAndType(documentUri, shotMimeType);
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                         | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                final PendingIntent editPendingIntent;
-                final CharSequence editActionText;
+                PendingIntent editPendingIntent = null;
+                CharSequence editActionText = null;
+                boolean needReplace = false;
                 if (mPreferences.isPreferredEditorAvailable()) {
                     Log.d(TAG, "Your preferred editor is available.");
                     intent.setComponent(mPreferences.getPreferredEditorComponentName()
@@ -335,22 +339,27 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                     } else {
                         editActionText = currentFormat.replace("%", "%%");
                     }
-                } else {
+
+                    needReplace = true;
+                } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
                     editPendingIntent = PendingIntent.getActivity(
                             this, 0,
                             Intent.createChooser(intent, getString(R.string.chooser_title_edit)),
                             PendingIntent.FLAG_UPDATE_CURRENT);
                     editActionText = getString(R.string.action_edit);
+
+                    needReplace = true;
                 }
 
-                final Notification.Action.Builder builder = new Notification.Action.Builder(
-                        Icon.createWithResource(this, R.drawable.ic_delete_black_24dp),
-                        editActionText, editPendingIntent);
-                if (editActionIndex == -1) {
-                    editActionIndex = actions.length - 1;
+                if (needReplace) {
+                    final Notification.Action.Builder builder = new Notification.Action.Builder(
+                            Icon.createWithResource(this, R.drawable.ic_delete_black_24dp),
+                            editActionText, editPendingIntent);
+                    if (editActionIndex == -1) {
+                        editActionIndex = n.actions.length - 1;
+                    }
+                    n.actions[editActionIndex] = builder.build();
                 }
-                actions[editActionIndex] = builder.build();
-                n.actions = actions;
 
                 // Replace click intent with preview intent
                 if (mPreferences.canPreviewInFloatingWindow() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -359,15 +368,15 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                     previewIntent.setAction(Intent.ACTION_MAIN);
                     if (shareActionIndex != -1) {
                         previewIntent.putExtra(PreviewActivity.EXTRA_SHARE_INTENT,
-                                actions[shareActionIndex].actionIntent);
+                                n.actions[shareActionIndex].actionIntent);
                     }
                     if (deleteActionIndex != -1) {
                         previewIntent.putExtra(PreviewActivity.EXTRA_DELETE_INTENT,
-                                actions[deleteActionIndex].actionIntent);
+                                n.actions[deleteActionIndex].actionIntent);
                     }
                     if (editActionIndex != -1) {
                         previewIntent.putExtra(PreviewActivity.EXTRA_EDIT_INTENT,
-                                actions[editActionIndex].actionIntent);
+                                n.actions[editActionIndex].actionIntent);
                     }
                     previewIntent.setComponent(ComponentName.createRelative(this, ".PreviewActivity"));
                     n.contentIntent = PendingIntent.getActivity(this, 0,
@@ -443,6 +452,17 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
         }
         final String[] possibleTranslations = context.getResources()
                 .getStringArray(R.array.action_share_translations);
+        return Arrays.stream(possibleTranslations)
+                .anyMatch(one -> one.equalsIgnoreCase(text.toString()));
+    }
+
+    private static boolean isEditActionText(
+            @NonNull Context context, @Nullable CharSequence text) {
+        if (TextUtils.isEmpty(text)) {
+            return false;
+        }
+        final String[] possibleTranslations = context.getResources()
+                .getStringArray(R.array.action_edit_translations);
         return Arrays.stream(possibleTranslations)
                 .anyMatch(one -> one.equalsIgnoreCase(text.toString()));
     }
