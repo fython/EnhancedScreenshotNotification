@@ -45,10 +45,11 @@ Just a try to use [Nevolution app](https://play.google.com/store/apps/details?id
 - [x] Multi-language (Chinese supported)
 - [x] Multi-format of "Edit in..." action text
 - [x] Settings interface
-- [ ] PiP Screenshot preview (Toggle size, dismiss, delete)
-- [ ] Hide "Edit" action for Android P users and allow them to install ENS
+- [x] PiP Screenshot preview (Toggle size, dismiss, delete)
+- [x] Support Android P
 - [ ] Keep previous screenshot notification and organize them
 - [ ] Support older Android version
+- [ ] Stable behavior when other notifications are posted from System UI
 
 # Contact me
 
