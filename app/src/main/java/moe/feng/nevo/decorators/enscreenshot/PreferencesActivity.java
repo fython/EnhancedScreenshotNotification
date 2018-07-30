@@ -1,19 +1,13 @@
 package moe.feng.nevo.decorators.enscreenshot;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
+import android.app.*;
 import android.content.*;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.LocaleList;
+import android.os.*;
 import android.preference.*;
 import android.text.TextUtils;
 import android.util.Log;
@@ -266,8 +260,7 @@ public class PreferencesActivity extends Activity {
         }
 
         private boolean setupPreferredEditor(Preference p) {
-            new PreferredEditorChooserDialog()
-                    .show(getChildFragmentManager(), KEY_PREFERRED_EDITOR);
+            mFutures.add(new PreferredEditorChooserDialog().postShow(getContext(), getChildFragmentManager()));
             return true;
         }
 
@@ -440,6 +433,8 @@ public class PreferencesActivity extends Activity {
 
         public static class PreferredEditorChooserDialog extends DialogFragment {
 
+            static final String STATE_CHOICES = "choices";
+
             private ScreenshotPreferences mPreferences;
 
             private List<Pair<ComponentName, String>> mChoices;
@@ -454,8 +449,13 @@ public class PreferencesActivity extends Activity {
             public Dialog onCreateDialog(Bundle savedInstanceState) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle(R.string.pref_preferred_editor);
-                // TODO: build list async
-                mChoices = buildChoicesList(getContext());
+                final Bundle bundle;
+                if (savedInstanceState == null) {
+                    bundle = Objects.requireNonNull(getArguments().getBundle(STATE_CHOICES));
+                } else {
+                    bundle = Objects.requireNonNull(savedInstanceState.getBundle(STATE_CHOICES));
+                }
+                mChoices = unparcelChoicesList(bundle);
                 final Optional<ComponentName> current =
                         mPreferences.getPreferredEditorComponentName();
                 int selected = 1;
@@ -480,8 +480,50 @@ public class PreferencesActivity extends Activity {
                 return builder.create();
             }
 
+            @Override
+            public void onSaveInstanceState(Bundle outState) {
+                super.onSaveInstanceState(outState);
+                outState.putBundle(STATE_CHOICES, parcelChoicesList(mChoices));
+            }
+
+            public CompletableFuture postShow(@NonNull Context context,@NonNull FragmentManager fm) {
+                return CompletableFuture.supplyAsync(() -> parcelChoicesList(buildChoicesList(context)))
+                        .whenCompleteAsync((choices, err) -> {
+                            final Bundle bundle = new Bundle();
+                            bundle.putBundle(STATE_CHOICES, choices);
+                            setArguments(bundle);
+                            show(fm, KEY_PREFERRED_EDITOR);
+                        }, Executors.getMainThreadExecutor());
+            }
+
+            static Bundle parcelChoicesList(@NonNull List<Pair<ComponentName, String>> list) {
+                final Bundle bundle = new Bundle();
+                bundle.putInt("0", list.size());
+                final ArrayList<ComponentName> cns = new ArrayList<>();
+                final ArrayList<String> strs = new ArrayList<>();
+                for (Pair<ComponentName, String> pair : list) {
+                    cns.add(pair.first);
+                    strs.add(pair.second);
+                }
+                bundle.putParcelableArrayList("1", cns);
+                bundle.putStringArrayList("2", strs);
+                return bundle;
+            }
+
             @NonNull
-            private static List<Pair<ComponentName, String>> buildChoicesList(
+            static List<Pair<ComponentName, String>> unparcelChoicesList(@NonNull Bundle bundle) {
+                final List<Pair<ComponentName, String>> list = new ArrayList<>();
+                final int size = bundle.getInt("0");
+                final List<ComponentName> cn = Objects.requireNonNull(bundle.getParcelableArrayList("1"));
+                final List<String> ns = Objects.requireNonNull(bundle.getStringArrayList("2"));
+                for (int i = 0; i < size; i++) {
+                    list.add(Pair.create(cn.get(i), ns.get(i)));
+                }
+                return list;
+            }
+
+            @NonNull
+            static List<Pair<ComponentName, String>> buildChoicesList(
                     @NonNull Context context) {
                 final List<Pair<ComponentName, String>> result = new ArrayList<>();
 

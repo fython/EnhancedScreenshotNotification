@@ -15,6 +15,8 @@
 
         <activity android:name=".PreferencesActivity"
                   android:exported="true"
+                  android:noHistory="true"
+                  android:taskAffinity=""
                   android:theme="@android:style/Theme.Material.Light">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES"/>
@@ -23,7 +25,9 @@
 
         <activity-alias android:name=".LaunchActivity"
                         android:targetActivity=".PreferencesActivity"
-                        android:enabled="true">
+                        android:enabled="true"
+                        android:noHistory="true"
+                        android:taskAffinity="">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.DEFAULT"/>
