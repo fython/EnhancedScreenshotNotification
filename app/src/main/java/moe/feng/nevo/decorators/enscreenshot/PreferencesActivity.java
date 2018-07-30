@@ -107,6 +107,7 @@ public class PreferencesActivity extends Activity {
         private static final String KEY_SHOW_SCREENSHOTS_COUNT = "show_screenshots_count";
         private static final String KEY_SHOW_SCREENSHOT_DETAILS = "show_screenshot_details";
         private static final String KEY_PREVIEW_IN_FLOATING_WINDOW = "preview_in_floating_window";
+        private static final String KEY_REPLACE_NOTIFICATION_WITH_PREVIEW = "replace_notification_with_preview";
 
         private static final int REQUEST_PERMISSION = 10;
 
@@ -119,6 +120,7 @@ public class PreferencesActivity extends Activity {
         private CheckBoxPreference mShowScreenshotsCount;
         private CheckBoxPreference mShowScreenshotDetails;
         private SwitchPreference mPreviewInFloatingWindow;
+        private SwitchPreference mReplaceNotificationWithPreview;
 
         private ScreenshotPreferences mPreferences;
 
@@ -162,6 +164,7 @@ public class PreferencesActivity extends Activity {
             mShowScreenshotsCount = (CheckBoxPreference) findPreference(KEY_SHOW_SCREENSHOTS_COUNT);
             mShowScreenshotDetails = (CheckBoxPreference) findPreference(KEY_SHOW_SCREENSHOT_DETAILS);
             mPreviewInFloatingWindow = (SwitchPreference) findPreference(KEY_PREVIEW_IN_FLOATING_WINDOW);
+            mReplaceNotificationWithPreview = (SwitchPreference) findPreference(KEY_REPLACE_NOTIFICATION_WITH_PREVIEW);
             final Preference githubPref = findPreference(KEY_GITHUB_REPO);
 
             updateUiActionAfterSharing();
@@ -172,6 +175,7 @@ public class PreferencesActivity extends Activity {
             updateUiShowScreenshotsCount();
             updateUiShowScreenshotDetails();
             updatePreviewInFloatingWindow();
+            updateReplaceNotificationWithPreview();
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 getPreferenceScreen().removePreference(findPreference("notification_settings"));
@@ -181,10 +185,16 @@ public class PreferencesActivity extends Activity {
                     !getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
                 mPreviewInFloatingWindow.setEnabled(false);
                 mPreviewInFloatingWindow.setSummary(R.string.pref_preview_in_floating_window_summary_unsupported);
+                getPreferenceScreen().removePreference(mReplaceNotificationWithPreview);
             }
 
             mPreviewInFloatingWindow.setOnPreferenceChangeListener((p, o) -> {
                 mPreferences.setPreviewInFloatingWindow((boolean) o);
+                mReplaceNotificationWithPreview.setEnabled((boolean) o);
+                return true;
+            });
+            mReplaceNotificationWithPreview.setOnPreferenceChangeListener((p, o) -> {
+                mPreferences.setReplaceNotificationWithPreview((boolean) o);
                 return true;
             });
             mActionAfterSharing.setOnPreferenceChangeListener((p, o) -> {
@@ -356,7 +366,12 @@ public class PreferencesActivity extends Activity {
         }
 
         private void updatePreviewInFloatingWindow() {
-            mShowScreenshotDetails.setChecked(mPreferences.canPreviewInFloatingWindow());
+            mPreviewInFloatingWindow.setChecked(mPreferences.canPreviewInFloatingWindow());
+            mReplaceNotificationWithPreview.setEnabled(mPreviewInFloatingWindow.isChecked());
+        }
+
+        private void updateReplaceNotificationWithPreview() {
+            mReplaceNotificationWithPreview.setChecked(mPreferences.isReplaceNotificationWithPreview());
         }
 
         @Override

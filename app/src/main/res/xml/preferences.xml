@@ -21,6 +21,12 @@
             android:summary="@string/pref_preview_in_floating_window_summary"
             android:defaultValue="false"/>
 
+    <SwitchPreference
+            android:key="replace_notification_with_preview"
+            android:title="@string/pref_replace_notification_with_preview"
+            android:summary="@string/pref_replace_notification_with_preview_summary"
+            android:defaultValue="false"/>
+
     <PreferenceCategory android:title="@string/category_share_action">
 
         <ListPreference

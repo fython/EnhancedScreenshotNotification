@@ -58,6 +58,8 @@
     <string name="pref_preview_in_floating_window">Preview in floating window</string>
     <string name="pref_preview_in_floating_window_summary">Click screenshot notification to open a floating preview window.</string>
     <string name="pref_preview_in_floating_window_summary_unsupported">Your device haven\'t supported Picture in Picture feature or it\'s in low memory.</string>
+    <string name="pref_replace_notification_with_preview">Show floating preview window instead (Beta)</string>
+    <string name="pref_replace_notification_with_preview_summary">Hide screenshot notification and open a floating preview window instead. Caution: It will interrupt current Picture in Picture activity like Chrome, YouTube\'s PiP.</string>
 
     <string name="toast_activity_not_found">No apps to handle this action.</string>
 

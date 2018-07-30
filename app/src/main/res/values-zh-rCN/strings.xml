@@ -53,6 +53,8 @@
     <string name="pref_preview_in_floating_window">在悬浮窗口中预览</string>
     <string name="pref_preview_in_floating_window_summary">点击截图通知以打开悬浮预览窗。</string>
     <string name="pref_preview_in_floating_window_summary_unsupported">你的设备不支持画中画特性或内存较低。</string>
+    <string name="pref_replace_notification_with_preview">显示悬浮预览窗代替通知（测试）</string>
+    <string name="pref_replace_notification_with_preview_summary">隐藏屏幕截图通知并打开一个悬浮预览窗取代它。注意：这会打断你当前画中画活动，如 Chrome、YouTube 的画中画播放。</string>
 
     <string name="toast_activity_not_found">没有能处理这个操作的应用</string>
 

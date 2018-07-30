@@ -260,6 +260,8 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                 .checkIfPermissionTypeGranted(this, PermissionRequestActivity.TYPE_STORAGE)) {
             final File[] shots = new File(mPreferences.getScreenshotPath()).listFiles();
             if (shots != null && shots.length > 0) {
+                Intent previewIntent = null;
+
                 // Add screenshots count to notification
                 if (mPreferences.isShowScreenshotsCount()) {
                     n.extras.putString(Notification.EXTRA_SUB_TEXT,
@@ -363,7 +365,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
 
                 // Replace click intent with preview intent
                 if (mPreferences.canPreviewInFloatingWindow() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    final Intent previewIntent = new Intent(intent);
+                    previewIntent = new Intent(intent);
                     previewIntent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                     previewIntent.setAction(Intent.ACTION_MAIN);
                     if (shareActionIndex != -1) {
@@ -381,6 +383,13 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                     previewIntent.setComponent(ComponentName.createRelative(this, ".PreviewActivity"));
                     n.contentIntent = PendingIntent.getActivity(this, 0,
                             previewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                }
+
+                if (mPreferences.canPreviewInFloatingWindow() && mPreferences.isReplaceNotificationWithPreview() &&
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && previewIntent != null) {
+                    previewIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(previewIntent);
+                    cancelNotification(evolving.getKey());
                 }
             }
         } else {
