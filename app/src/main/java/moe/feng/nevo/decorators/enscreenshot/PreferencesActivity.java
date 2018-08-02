@@ -77,7 +77,7 @@ public class PreferencesActivity extends Activity {
                         })
                         .show();
             }
-        }, Executors.getMainThreadExecutor());
+        }, Executors.mainThread());
     }
 
     @Override
@@ -275,7 +275,7 @@ public class PreferencesActivity extends Activity {
                     .supplyAsync(mPreferences::getShareEvolveType)
                     .whenCompleteAsync((type, thr) ->
                                     mActionAfterSharing.setValue(String.valueOf(mPreferences.getShareEvolveType())),
-                            Executors.getMainThreadExecutor()));
+                            Executors.mainThread()));
         }
 
         private void updateUiStoragePermission() {
@@ -286,7 +286,7 @@ public class PreferencesActivity extends Activity {
                                 mStoragePermission.setChecked(bool);
                                 mStoragePermission.setEnabled(!bool);
                             },
-                            Executors.getMainThreadExecutor()));
+                            Executors.mainThread()));
         }
 
         private void updateUiScreenshotPath() {
@@ -295,7 +295,7 @@ public class PreferencesActivity extends Activity {
                     .thenApply(path ->
                             getString(R.string.pref_screenshots_store_path_summary_format, path))
                     .whenCompleteAsync((summary, thr) -> mScreenshotPath.setSummary(summary),
-                            Executors.getMainThreadExecutor()));
+                            Executors.mainThread()));
         }
 
         private void updateUiPreferredEditor() {
@@ -309,14 +309,14 @@ public class PreferencesActivity extends Activity {
                                         optional.orElseGet(() -> getString(R.string.ask_every_time))
                                 )
                         );
-                    }, Executors.getMainThreadExecutor()));
+                    }, Executors.mainThread()));
         }
 
         private void updateUiHideLauncherIcon() {
             mFutures.add(CompletableFuture
                     .supplyAsync(mPreferences::isHideLauncherIcon)
                     .whenCompleteAsync((bool, thr) -> mHideLauncherIcon.setChecked(bool),
-                            Executors.getMainThreadExecutor()));
+                            Executors.mainThread()));
         }
 
         private void updateEditActionTextFormat() {
@@ -347,7 +347,7 @@ public class PreferencesActivity extends Activity {
                         } else {
                             mEditActionTextFormat.setValueIndex(1);
                         }
-                    }, Executors.getMainThreadExecutor()));
+                    }, Executors.mainThread()));
         }
 
         private void updateUiShowScreenshotsCount() {
@@ -493,7 +493,7 @@ public class PreferencesActivity extends Activity {
                             bundle.putBundle(STATE_CHOICES, choices);
                             setArguments(bundle);
                             show(fm, KEY_PREFERRED_EDITOR);
-                        }, Executors.getMainThreadExecutor());
+                        }, Executors.mainThread());
             }
 
             static Bundle parcelChoicesList(@NonNull List<Pair<ComponentName, String>> list) {

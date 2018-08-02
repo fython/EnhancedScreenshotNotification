@@ -34,6 +34,7 @@ public class PreviewActivity extends Activity {
     public static final String EXTRA_SHARE_INTENT = BuildConfig.APPLICATION_ID + ".extra.SHARE_INTENT";
     public static final String EXTRA_DELETE_INTENT = BuildConfig.APPLICATION_ID + ".extra.DELETE_INTENT";
     public static final String EXTRA_EDIT_INTENT = BuildConfig.APPLICATION_ID + ".extra.EDIT_INTENT";
+    public static final String EXTRA_NOTIFICATION_KEY = BuildConfig.APPLICATION_ID + ".extra.NOTIFICATION_KEY";
 
     public static final String ACTION_SHARE = BuildConfig.APPLICATION_ID + ".action.PREVIEW_ACTION_SHARE";
     public static final String ACTION_DELETE = BuildConfig.APPLICATION_ID + ".action.PREVIEW_ACTION_DELETE";
@@ -47,6 +48,7 @@ public class PreviewActivity extends Activity {
 
     private Uri mImageUri;
     private PendingIntent mShareIntent, mDeleteIntent, mEditIntent;
+    private String mNotificationKey;
 
     private CompletableFuture mImageLoadFuture;
 
@@ -68,6 +70,7 @@ public class PreviewActivity extends Activity {
         mShareIntent = intent.getParcelableExtra(EXTRA_SHARE_INTENT);
         mDeleteIntent = intent.getParcelableExtra(EXTRA_DELETE_INTENT);
         mEditIntent = intent.getParcelableExtra(EXTRA_EDIT_INTENT);
+        mNotificationKey = intent.getStringExtra(EXTRA_NOTIFICATION_KEY);
 
         setContentView(R.layout.layout_preview);
 
@@ -131,15 +134,18 @@ public class PreviewActivity extends Activity {
                     }
                     updatePictureInPictureParams(new Rational(bitmap.getWidth(), bitmap.getHeight()));
                     mImageView.setImageBitmap(bitmap);
-                }, Executors.getMainThreadExecutor());
+                }, Executors.mainThread());
     }
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG, "PreviewActivity: onDestroy");
         super.onDestroy();
         if (mImageLoadFuture != null) {
             mImageLoadFuture.cancel(true);
         }
+        sendBroadcast(new Intent(ScreenshotDecorator.ACTION_CANCEL_NOTIFICATION)
+                .putExtra("key", mNotificationKey));
         try {
             unregisterReceiver(mRemoteActionReceiver);
         } catch (Exception ignored) {

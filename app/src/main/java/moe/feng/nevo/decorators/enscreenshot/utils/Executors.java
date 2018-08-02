@@ -13,7 +13,7 @@ public final class Executors {
             new HandlerExecutor(new Handler(Looper.getMainLooper()));
 
     @NonNull
-    public static Executor getMainThreadExecutor() {
+    public static Executor mainThread() {
         return MAIN_THREAD_EXECUTOR;
     }
 

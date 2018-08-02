@@ -7,6 +7,7 @@
     <string name="decorator_service_description">將「編輯」操作帶到擷圖通知。</string>
 
     <string name="noti_channel_screenshot">擷圖</string>
+    <string name="noti_channel_screenshot_preview">預覽中的擷圖</string>
     <string name="noti_channel_other">其他</string>
     <string name="noti_channel_permission">權限</string>
 

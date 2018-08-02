@@ -47,7 +47,8 @@
                   android:supportsPictureInPicture="true"
                   android:excludeFromRecents="true"
                   android:noHistory="true"
-                  android:theme="@style/AppTheme.Preview">
+                  android:theme="@style/AppTheme.Preview"
+                  android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>

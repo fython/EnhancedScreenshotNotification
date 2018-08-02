@@ -6,6 +6,7 @@
     <string name="decorator_service_description">Take \"Edit\" action to screenshot notifications.</string>
 
     <string name="noti_channel_screenshot">Screenshots</string>
+    <string name="noti_channel_screenshot_preview">Previewing screenshots</string>
     <string name="noti_channel_other">Other</string>
     <string name="noti_channel_permission">Permissions</string>
 

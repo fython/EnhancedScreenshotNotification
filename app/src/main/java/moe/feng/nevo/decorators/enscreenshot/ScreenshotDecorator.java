@@ -46,6 +46,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             BuildConfig.APPLICATION_ID + ".extra.RECENT_SHOT";
 
     private static final String CHANNEL_ID_SCREENSHOT = "screenshot";
+    private static final String CHANNEL_ID_PREVIEWED_SCREENSHOT = "previewed";
     private static final String CHANNEL_ID_OTHER = "other";
     private static final String CHANNEL_ID_PERMISSION = "permission";
 
@@ -55,6 +56,8 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             BuildConfig.APPLICATION_ID + ".action.SHARE_SCREENSHOT";
     private static final String ACTION_DELETE_SCREENSHOT =
             BuildConfig.APPLICATION_ID + ".action.DELETE_SCREENSHOT";
+    public static final String ACTION_CANCEL_NOTIFICATION =
+            BuildConfig.APPLICATION_ID + ".action.CANCEL_NOTIFICATION";
 
     private final BroadcastReceiver mShareReceiver = new BroadcastReceiver() {
         @Override
@@ -144,7 +147,22 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
         }
     };
 
+    private final BroadcastReceiver mCancelNotiReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(@NonNull Context context, @Nullable Intent intent) {
+            if (intent == null || !intent.hasExtra("key")) {
+                Log.e(TAG, "Cancel notification intent should not be empty and contains a \"key\"");
+                return;
+            }
+            cancelNotification(intent.getStringExtra("key"));
+        }
+    };
+
+    @NonNull
     private ScreenshotPreferences mPreferences;
+
+    @Nullable
+    private Uri mLastPreviewedShotUri = null;
 
     @Override
     protected void onConnected() {
@@ -167,14 +185,23 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             screenshotChannel.setSound(Uri.EMPTY, new AudioAttributes.Builder().build());
             screenshotChannel.enableLights(true);
 
+            final NotificationChannel previewedChannel = new NotificationChannel(
+                    CHANNEL_ID_PREVIEWED_SCREENSHOT,
+                    getString(R.string.noti_channel_screenshot_preview),
+                    NotificationManager.IMPORTANCE_MIN
+            );
+            previewedChannel.setSound(Uri.EMPTY, new AudioAttributes.Builder().build());
+            previewedChannel.enableLights(false);
+
             createNotificationChannels(
-                    TARGET_PACKAGE, Arrays.asList(screenshotChannel, otherChannel));
+                    TARGET_PACKAGE, Arrays.asList(screenshotChannel, otherChannel, previewedChannel));
         }
 
         // Register action receivers
         try {
             registerReceiver(mShareReceiver, new IntentFilter(ACTION_SHARE_SCREENSHOT));
             registerReceiver(mDeleteReceiver, new IntentFilter(ACTION_DELETE_SCREENSHOT));
+            registerReceiver(mCancelNotiReceiver, new IntentFilter(ACTION_CANCEL_NOTIFICATION));
         } catch (Exception ignored) {
 
         }
@@ -186,6 +213,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
         try {
             unregisterReceiver(mShareReceiver);
             unregisterReceiver(mDeleteReceiver);
+            unregisterReceiver(mCancelNotiReceiver);
         } catch (Exception ignored) {
 
         }
@@ -202,10 +230,6 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             return;
         } else {
             Log.d(TAG, "Detect screenshot notification from System UI");
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            n.setChannelId(CHANNEL_ID_SCREENSHOT);
         }
 
         // Find out actions
@@ -365,6 +389,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                     previewIntent = new Intent(intent);
                     previewIntent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                     previewIntent.setAction(Intent.ACTION_MAIN);
+                    previewIntent.putExtra(PreviewActivity.EXTRA_NOTIFICATION_KEY, evolving.getKey());
                     if (shareActionIndex != -1) {
                         previewIntent.putExtra(PreviewActivity.EXTRA_SHARE_INTENT,
                                 n.actions[shareActionIndex].actionIntent);
@@ -380,47 +405,63 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                     previewIntent.setComponent(ComponentName.createRelative(this, ".PreviewActivity"));
                     n.contentIntent = PendingIntent.getActivity(this, 0,
                             previewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    n.deleteIntent
                 }
 
+                // Should use low priority notification instead
                 if (mPreferences.canPreviewInFloatingWindow() && mPreferences.isReplaceNotificationWithPreview() &&
                         Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && previewIntent != null) {
-                    previewIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(previewIntent);
-                    cancelNotification(evolving.getKey());
+                    // Avoid duplicated preview
+                    if (mLastPreviewedShotUri == null || !mLastPreviewedShotUri.equals(documentUri)) {
+                        mLastPreviewedShotUri = documentUri;
+                        previewIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        Log.d(TAG, "PreviewActivity: should be started");
+                        startActivity(previewIntent);
+                    }
+                    n.setChannelId(CHANNEL_ID_PREVIEWED_SCREENSHOT);
                 }
+            }
+
+            // Set notification channel
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && TextUtils.isEmpty(n.getChannelId())) {
+                n.setChannelId(CHANNEL_ID_SCREENSHOT);
             }
         } else {
             // Notify user for required permission
-            final NotificationManager nm = getSystemService(NotificationManager.class);
-            if (nm != null) {
-                final Intent intent = new Intent(getApplicationContext(),
-                        PermissionRequestActivity.class);
-                intent.putExtra(PermissionRequestActivity.EXTRA_PERMISSION_TYPE,
-                        PermissionRequestActivity.TYPE_STORAGE);
-                final PendingIntent pi = PendingIntent.getActivity(
-                        this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            notifyRequiredPermission();
+        }
+    }
 
-                final String content = getString(R.string.noti_storage_permission_required_content);
-                final Notification.Builder builder = new Notification.Builder(this)
-                        .setContentTitle(getString(R.string.noti_storage_permission_required_title))
-                        .setContentText(content)
-                        .setStyle(new Notification.BigTextStyle().bigText(content))
-                        .setSmallIcon(R.drawable.ic_assistant_white_24dp)
-                        .setAutoCancel(true)
-                        .setShowWhen(false)
-                        .setContentIntent(pi);
+    private void notifyRequiredPermission() {
+        final NotificationManager nm = getSystemService(NotificationManager.class);
+        if (nm != null) {
+            final Intent intent = new Intent(getApplicationContext(),
+                    PermissionRequestActivity.class);
+            intent.putExtra(PermissionRequestActivity.EXTRA_PERMISSION_TYPE,
+                    PermissionRequestActivity.TYPE_STORAGE);
+            final PendingIntent pi = PendingIntent.getActivity(
+                    this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    builder.setChannelId(CHANNEL_ID_PERMISSION);
+            final String content = getString(R.string.noti_storage_permission_required_content);
+            final Notification.Builder builder = new Notification.Builder(this)
+                    .setContentTitle(getString(R.string.noti_storage_permission_required_title))
+                    .setContentText(content)
+                    .setStyle(new Notification.BigTextStyle().bigText(content))
+                    .setSmallIcon(R.drawable.ic_assistant_white_24dp)
+                    .setAutoCancel(true)
+                    .setShowWhen(false)
+                    .setContentIntent(pi);
 
-                    final NotificationChannel channel = new NotificationChannel(
-                            CHANNEL_ID_PERMISSION, getString(R.string.noti_channel_permission),
-                            NotificationManager.IMPORTANCE_LOW);
-                    nm.createNotificationChannel(channel);
-                }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                builder.setChannelId(CHANNEL_ID_PERMISSION);
 
-                nm.notify(NOTIFICATION_ID_REQUEST_PERMISSION, builder.build());
+                final NotificationChannel channel = new NotificationChannel(
+                        CHANNEL_ID_PERMISSION, getString(R.string.noti_channel_permission),
+                        NotificationManager.IMPORTANCE_LOW);
+                nm.createNotificationChannel(channel);
             }
+
+            nm.notify(NOTIFICATION_ID_REQUEST_PERMISSION, builder.build());
         }
     }
 
