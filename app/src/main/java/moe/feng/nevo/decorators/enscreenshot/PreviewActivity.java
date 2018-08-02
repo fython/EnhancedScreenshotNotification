@@ -73,7 +73,9 @@ public class PreviewActivity extends Activity {
 
         mImageView = findViewById(R.id.image_view);
 
-        updatePictureInPictureParams();
+        if (mPIPParams == null) {
+            updatePictureInPictureParams();
+        }
 
         if (!isInPictureInPictureMode()) {
             enterPictureInPictureMode(mPIPParams);
