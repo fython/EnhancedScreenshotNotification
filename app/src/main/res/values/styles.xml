@@ -7,4 +7,8 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
+    <style name="AppTheme.Preview" parent="android:Theme.Translucent.NoTitleBar">
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
 </resources>

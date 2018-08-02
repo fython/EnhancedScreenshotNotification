@@ -14,12 +14,13 @@ import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Rational;
 import android.widget.ImageView;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import moe.feng.nevo.decorators.enscreenshot.utils.Executors;
+import moe.feng.nevo.decorators.enscreenshot.utils.ScreenUtils;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -126,6 +127,7 @@ public class PreviewActivity extends Activity {
                         }
                         return;
                     }
+                    updatePictureInPictureParams(new Rational(bitmap.getWidth(), bitmap.getHeight()));
                     mImageView.setImageBitmap(bitmap);
                 }, Executors.getMainThreadExecutor());
     }
@@ -156,8 +158,13 @@ public class PreviewActivity extends Activity {
     }
 
     private void updatePictureInPictureParams() {
-        final DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getRealMetrics(dm);
+        updatePictureInPictureParams(null);
+    }
+
+    private synchronized void updatePictureInPictureParams(@Nullable Rational aspect) {
+        if (aspect == null) {
+            aspect = ScreenUtils.getDefaultDisplayRational(this);
+        }
 
         final List<RemoteAction> remoteActions = new ArrayList<>();
 
@@ -195,7 +202,7 @@ public class PreviewActivity extends Activity {
         }
 
         mPIPParams = new PictureInPictureParams.Builder()
-                .setAspectRatio(new Rational(dm.widthPixels, dm.heightPixels))
+                .setAspectRatio(aspect)
                 .setActions(remoteActions)
                 .build();
 
