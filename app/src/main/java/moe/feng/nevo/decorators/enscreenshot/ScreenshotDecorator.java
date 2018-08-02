@@ -405,7 +405,6 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                     previewIntent.setComponent(ComponentName.createRelative(this, ".PreviewActivity"));
                     n.contentIntent = PendingIntent.getActivity(this, 0,
                             previewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    n.deleteIntent
                 }
 
                 // Should use low priority notification instead

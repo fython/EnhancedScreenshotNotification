@@ -49,7 +49,7 @@ Just a try to use [Nevolution app](https://play.google.com/store/apps/details?id
 - [x] Support Android P
 - [ ] Keep previous screenshot notification and organize them
 - [ ] Support older Android version
-- [ ] Stable behavior when other notifications are posted from System UI
+- [x] Stable behavior when other notifications are posted from System UI
 
 # Contact me
 
