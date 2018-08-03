@@ -17,13 +17,20 @@ public final class ScreenUtils {
     }
 
     @NonNull
+    public static DisplayMetrics getDefaultDisplayRealMetrics(@NonNull Context context) {
+        final DisplayMetrics dm = new DisplayMetrics();
+        final WindowManager wm = Objects.requireNonNull(context.getSystemService(WindowManager.class));
+        wm.getDefaultDisplay().getRealMetrics(dm);
+
+        return dm;
+    }
+
+    @NonNull
     public static Rational getDefaultDisplayRational(@NonNull Context context) {
         if (sDefaultDisplayRational == null) {
             synchronized (ScreenUtils.class) {
                 if (sDefaultDisplayRational == null) {
-                    final DisplayMetrics dm = new DisplayMetrics();
-                    final WindowManager wm = Objects.requireNonNull(context.getSystemService(WindowManager.class));
-                    wm.getDefaultDisplay().getRealMetrics(dm);
+                    final DisplayMetrics dm = getDefaultDisplayRealMetrics(context);
 
                     sDefaultDisplayRational = new Rational(dm.widthPixels, dm.heightPixels);
                 }

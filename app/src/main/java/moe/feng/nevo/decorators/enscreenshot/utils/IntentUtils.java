@@ -35,6 +35,15 @@ public final class IntentUtils {
         }
     }
 
+    public static Intent createMailSendToIntent(@NonNull String address, String subject, String text) {
+        final Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:" + address));
+        intent.putExtra(Intent.EXTRA_EMAIL, address);
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        return intent;
+    }
+
     public static void closeSystemDialogs(@NonNull Context context) {
         Intent intent = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         context.sendBroadcast(intent);

@@ -57,6 +57,9 @@
     <string name="pref_replace_notification_with_preview">顯示浮動預覽窗替代通知</string>
     <string name="pref_replace_notification_with_preview_summary">隱匿熒幕擷圖通知並打開一個浮動窗口取代之。注意：這會中斷你當前子母畫面活動，如 Chrome、YouTube 的子母畫面播放。</string>
 
+    <string name="action_feedback">發送反饋</string>
+    <string name="action_help">幫助</string>
+
     <string name="toast_activity_not_found">沒有能處理這個操作的程式</string>
 
 </resources>

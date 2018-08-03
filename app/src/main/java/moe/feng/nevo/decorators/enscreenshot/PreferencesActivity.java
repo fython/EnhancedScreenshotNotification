@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -24,6 +25,7 @@ import java.util.concurrent.Future;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import moe.feng.nevo.decorators.enscreenshot.utils.DeviceInfoPrinter;
 import moe.feng.nevo.decorators.enscreenshot.utils.FormatUtils;
 import moe.feng.nevo.decorators.enscreenshot.utils.IntentUtils;
 import moe.feng.nevo.decorators.enscreenshot.utils.Executors;
@@ -81,9 +83,32 @@ public class PreferencesActivity extends Activity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_preferences, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+            return true;
+        } else if (item.getItemId() == R.id.action_feedback) {
+            final String subject = "Enhanced Screenshot Notification - Feedback";
+            final String text = "Describe your suggestions here...\n\n"
+                    + DeviceInfoPrinter.DIVIDER + DeviceInfoPrinter.print(this);
+            final Intent sendToIntent = IntentUtils.createMailSendToIntent("fythonx@gmail.com", subject, text);
+            if (sendToIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(Intent.createChooser(sendToIntent, getString(R.string.action_feedback)));
+            } else {
+                final Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://github.com/fython/EnhancedScreenshotNotification/issues"));
+                startActivity(intent);
+            }
+            return true;
+        } else if (item.getItemId() == R.id.action_help) {
+            final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://gwo.app/help/esn"));
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
