@@ -49,7 +49,8 @@
         <Preference
                 android:key="preferred_editor"
                 android:title="@string/pref_preferred_editor"
-                android:summary="@string/pref_preferred_editor_summary"/>
+                android:summary="@string/pref_preferred_editor_summary"
+                android:layout="@layout/preference_right_icon"/>
 
         <ListPreference
                 android:key="edit_action_text_format"

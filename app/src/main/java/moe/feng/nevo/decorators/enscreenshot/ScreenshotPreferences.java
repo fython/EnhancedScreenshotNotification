@@ -3,6 +3,7 @@ package moe.feng.nevo.decorators.enscreenshot;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.os.LocaleList;
 import android.text.TextUtils;
@@ -95,6 +96,20 @@ public final class ScreenshotPreferences {
                 return Optional.of(
                         mPackageManager.getActivityInfo(cn.get(), PackageManager.GET_META_DATA)
                                 .loadLabel(mPackageManager));
+            } catch (PackageManager.NameNotFoundException ignored) {
+
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Drawable> getPreferredEditorIcon() {
+        final Optional<ComponentName> cn = getPreferredEditorComponentName();
+        if (cn.isPresent()) {
+            try {
+                return Optional.of(
+                        mPackageManager.getActivityInfo(cn.get(), PackageManager.GET_META_DATA)
+                                .loadUnbadgedIcon(mPackageManager));
             } catch (PackageManager.NameNotFoundException ignored) {
 
             }

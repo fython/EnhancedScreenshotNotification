@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import com.oasisfeng.nevo.sdk.MutableNotification;
 import com.oasisfeng.nevo.sdk.MutableStatusBarNotification;
@@ -169,32 +170,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
         mPreferences = new ScreenshotPreferences(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            final NotificationChannel screenshotChannel = new NotificationChannel(
-                    CHANNEL_ID_SCREENSHOT,
-                    getString(R.string.noti_channel_screenshot),
-                    NotificationManager.IMPORTANCE_HIGH
-            );
-            screenshotChannel.setSound(Uri.EMPTY, new AudioAttributes.Builder().build());
-            screenshotChannel.enableLights(false);
-
-            final NotificationChannel otherChannel = new NotificationChannel(
-                    CHANNEL_ID_OTHER,
-                    getString(R.string.noti_channel_other),
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            screenshotChannel.setSound(Uri.EMPTY, new AudioAttributes.Builder().build());
-            screenshotChannel.enableLights(true);
-
-            final NotificationChannel previewedChannel = new NotificationChannel(
-                    CHANNEL_ID_PREVIEWED_SCREENSHOT,
-                    getString(R.string.noti_channel_screenshot_preview),
-                    NotificationManager.IMPORTANCE_MIN
-            );
-            previewedChannel.setSound(Uri.EMPTY, new AudioAttributes.Builder().build());
-            previewedChannel.enableLights(false);
-
-            createNotificationChannels(
-                    TARGET_PACKAGE, Arrays.asList(screenshotChannel, otherChannel, previewedChannel));
+            ensureEvolvedNotificationChannel();
         }
 
         // Register action receivers
@@ -429,6 +405,36 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             // Notify user for required permission
             notifyRequiredPermission();
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private void ensureEvolvedNotificationChannel() {
+        final NotificationChannel screenshotChannel = new NotificationChannel(
+                CHANNEL_ID_SCREENSHOT,
+                getString(R.string.noti_channel_screenshot),
+                NotificationManager.IMPORTANCE_HIGH
+        );
+        screenshotChannel.setSound(Uri.EMPTY, new AudioAttributes.Builder().build());
+        screenshotChannel.enableLights(false);
+
+        final NotificationChannel otherChannel = new NotificationChannel(
+                CHANNEL_ID_OTHER,
+                getString(R.string.noti_channel_other),
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+        screenshotChannel.setSound(Uri.EMPTY, new AudioAttributes.Builder().build());
+        screenshotChannel.enableLights(true);
+
+        final NotificationChannel previewedChannel = new NotificationChannel(
+                CHANNEL_ID_PREVIEWED_SCREENSHOT,
+                getString(R.string.noti_channel_screenshot_preview),
+                NotificationManager.IMPORTANCE_MIN
+        );
+        previewedChannel.setSound(Uri.EMPTY, new AudioAttributes.Builder().build());
+        previewedChannel.enableLights(false);
+
+        createNotificationChannels(
+                TARGET_PACKAGE, Arrays.asList(screenshotChannel, otherChannel, previewedChannel));
     }
 
     private void notifyRequiredPermission() {

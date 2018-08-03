@@ -54,7 +54,7 @@
     <string name="pref_preview_in_floating_window">在浮動視窗中預覽</string>
     <string name="pref_preview_in_floating_window_summary">點擊擷圖通知以打開浮動預覽窗。</string>
     <string name="pref_preview_in_floating_window_summary_unsupported">你的設備不支援子母畫面特性或内存較低。</string>
-    <string name="pref_replace_notification_with_preview">顯示浮動預覽窗替代通知（測試）</string>
+    <string name="pref_replace_notification_with_preview">顯示浮動預覽窗替代通知</string>
     <string name="pref_replace_notification_with_preview_summary">隱匿熒幕擷圖通知並打開一個浮動窗口取代之。注意：這會中斷你當前子母畫面活動，如 Chrome、YouTube 的子母畫面播放。</string>
 
     <string name="toast_activity_not_found">沒有能處理這個操作的程式</string>

@@ -300,13 +300,19 @@ public class PreferencesActivity extends Activity {
 
         private void updateUiPreferredEditor() {
             mFutures.add(CompletableFuture
-                    .supplyAsync(mPreferences::getPreferredEditorTitle)
-                    .whenCompleteAsync((optional, thr) -> {
-                        mEditActionTextFormat.setEnabled(optional.isPresent());
+                    .supplyAsync(() ->
+                            Pair.create(mPreferences.getPreferredEditorTitle(), mPreferences.getPreferredEditorIcon()))
+                    .whenCompleteAsync((pair, thr) -> {
+                        if (pair.second.isPresent()) {
+                            mPreferredEditor.setIcon(pair.second.get());
+                        } else {
+                            mPreferredEditor.setIcon(null);
+                        }
+                        mEditActionTextFormat.setEnabled(pair.first.isPresent());
                         updateEditActionTextFormat();
                         mPreferredEditor.setSummary(
                                 getString(R.string.pref_preferred_editor_summary,
-                                        optional.orElseGet(() -> getString(R.string.ask_every_time))
+                                        pair.first.orElseGet(() -> getString(R.string.ask_every_time))
                                 )
                         );
                     }, Executors.mainThread()));
@@ -458,7 +464,7 @@ public class PreferencesActivity extends Activity {
                 mChoices = unparcelChoicesList(bundle);
                 final Optional<ComponentName> current =
                         mPreferences.getPreferredEditorComponentName();
-                int selected = 1;
+                int selected = 0;
                 if (current.isPresent() && mPreferences.isPreferredEditorAvailable()) {
                     for (int i = 1; i < mChoices.size(); i++) {
                         if (current.get().equals(mChoices.get(i).first)) {
