@@ -1,9 +1,11 @@
-Enhanced Screenshots Notification - Help
+Enhanced Screenshot Notification - Help
 ====
 
 ![](.github/PlayStore_Post.png)
 
 Here I only show frequent asked questions. If you are meeting some bugs, please [create an issue](https://github.com/fython/EnhancedScreenshotNotification/issues/new) in this repository.
+
+Needs other languages? [简体中文 (zh-CN)](./.github/HELP_zh_CN.md)
 
 ## Q: How to use this app?
 
@@ -28,9 +30,9 @@ Firstly, read the first question that about how to install properly.
 
 Check if your ROM's default screenshot path is `<External Storage>/Pictures/Screenshots`. If not, change ENS settings to correct path.
 
-## Q: Can I directly edit screnshot by specified app instead of choosing editors every time?
+## Q: Can I directly edit screenshot by specified app instead of choosing editors every time?
 
-Yes, go to ENS Settings and set your preferred editor.
+Yes. Go to ENS Settings and set your preferred editor.
 
 ## Q: Can I customize screenshot sound?
 
@@ -44,7 +46,7 @@ Enable settings and choose if show floating preview automatically instead of not
 
 # For developers
 
-## Q: Can I contribute this project?
+## Q: Can I contribute on this project?
 
 Of course. I am glad to work with other developers together.
 
