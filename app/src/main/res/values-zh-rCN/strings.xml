@@ -40,7 +40,7 @@
     <string name="screenshots_count_format">%d 张截图</string>
     <string name="pref_show_screenshot_details">显示新截图的详细信息</string>
     <string name="pref_show_screenshot_details_summary">在通知中增加新截图的大小、分辨率和类型详情。</string>
-    <string name="screenshot_details_format">类型：%s，分辨率：%s，大小：%s。</string>
+    <string name="screenshot_details_format">类型：%1$s，分辨率：%2$s，大小：%3$s。</string>
     <string name="pref_notification_settings">截图通知设置</string>
     <string name="action_share_screenshot">分享屏幕截图</string>
 

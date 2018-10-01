@@ -44,7 +44,7 @@
     <string name="screenshots_count_format">%d shots</string>
     <string name="pref_show_screenshot_details">Show new screenshot details</string>
     <string name="pref_show_screenshot_details_summary">Add details about size, resolution and type of new screenshot to notification.</string>
-    <string name="screenshot_details_format">Type: %s. Resolution: %s. Size: %s</string>
+    <string name="screenshot_details_format">Type: %1$s. Resolution: %2$s. Size: %3$s</string>
     <string name="pref_notification_settings">Screenshot notification settings</string>
     <string name="action_share_screenshot">Share screenshot</string>
 

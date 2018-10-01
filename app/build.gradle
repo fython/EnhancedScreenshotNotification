@@ -24,8 +24,12 @@ android {
 
 dependencies {
     implementation 'com.oasisfeng.nevo:sdk:1.1.1'
-    final androidxVersion = '1.0.0-beta01'
+    final androidxVersion = '1.0.0'
     implementation "androidx.annotation:annotation:$androidxVersion"
     implementation "androidx.core:core:$androidxVersion"
     implementation 'net.grandcentrix.tray:tray:0.12.0'
+    implementation 'com.google.firebase:firebase-core:16.0.3'
+    implementation 'com.google.firebase:firebase-ml-vision:17.0.0'
 }
+
+apply plugin: 'com.google.gms.google-services'

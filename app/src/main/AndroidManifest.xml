@@ -13,6 +13,9 @@
         android:fullBackupContent="true"
         android:allowBackup="true">
 
+        <meta-data android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+                   android:value="barcode" />
+
         <activity android:name=".PreferencesActivity"
                   android:exported="true"
                   android:noHistory="true"
