@@ -31,8 +31,8 @@ Other features:
 
 ## For developers
 
-- Android SDK 27
-- Android Studio 3.3
+- Android SDK 28
+- Android Studio 3.2+
 - Gradle 4.8
 
 # TO-DO
@@ -48,6 +48,9 @@ Other features:
 - [ ] Keep previous screenshot notification and organize them
 - [ ] Support older Android version
 - [x] Stable behavior when other notifications are posted from System UI
+- [x] Barcode detection
+- [ ] Material Design 2
+- [ ] Better screenshot preview experience
 
 # Contact me
 
