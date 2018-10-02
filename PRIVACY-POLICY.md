@@ -2,8 +2,8 @@
 
 Enhanced Screenshot Notification will use following permissions:
 
-- **Internet: ** Produce barcode links preview; collect crash report to developers; get the latest discussion link.
-- **Storage: ** Get information from the latest screenshot; delete screenshot; share screenshot by users\' action.
+- **Internet:** Produce barcode links preview; collect crash report to developers; get the latest discussion link.
+- **Storage:** Get information from the latest screenshot; delete screenshot; share screenshot by users\' action.
 
 All source code except Google API keys is open-sourced. If you are suspicious of the pre-compiled version, you can
 self-check the code and compile your own package. (You can also try to use F-Droid compiled package.)
