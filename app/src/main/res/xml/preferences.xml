@@ -90,6 +90,11 @@
                 android:title="@string/pref_github_repo"
                 android:summary="@string/pref_github_repo_url"/>
 
+        <Preference
+                android:key="telegram"
+                android:title="@string/pref_telegram_discussion"
+                android:summary="@string/pref_telegram_discussion_summary"/>
+
     </PreferenceCategory>
 
 </PreferenceScreen>

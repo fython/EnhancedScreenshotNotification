@@ -110,6 +110,8 @@ public class PreferencesActivity extends Activity {
             final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://gwo.app/help/esn"));
             startActivity(intent);
             return true;
+        } else if (item.getItemId() == R.id.action_privacy_policy) {
+            startActivity(IntentUtils.createViewIntent(Uri.parse(getString(R.string.action_privacy_policy_url))));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -128,6 +130,7 @@ public class PreferencesActivity extends Activity {
         private static final String KEY_PREVIEW_IN_FLOATING_WINDOW = "preview_in_floating_window";
         private static final String KEY_REPLACE_NOTIFICATION_WITH_PREVIEW = "replace_notification_with_preview";
         private static final String KEY_DETECT_BARCODE = "detect_barcode";
+        private static final String KEY_TELEGRAM = "telegram";
 
         private static final int REQUEST_PERMISSION = 10;
 
@@ -188,6 +191,7 @@ public class PreferencesActivity extends Activity {
             mReplaceNotificationWithPreview = (SwitchPreference) findPreference(KEY_REPLACE_NOTIFICATION_WITH_PREVIEW);
             final Preference githubPref = findPreference(KEY_GITHUB_REPO);
             mDetectBarcode = (SwitchPreference) findPreference(KEY_DETECT_BARCODE);
+            final Preference telegramPref = findPreference(KEY_TELEGRAM);
 
             updateUiActionAfterSharing();
             updateUiStoragePermission();
@@ -259,6 +263,14 @@ public class PreferencesActivity extends Activity {
             });
             mDetectBarcode.setOnPreferenceChangeListener((p, o) -> {
                 mPreferences.setDetectBarcode((boolean) o);
+                return true;
+            });
+            telegramPref.setOnPreferenceClickListener(p -> {
+                try {
+                    startActivity(IntentUtils.createViewIntent(Uri.parse(getString(R.string.telegram_discussion_url))));
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(getActivity(), R.string.toast_activity_not_found, Toast.LENGTH_LONG).show();
+                }
                 return true;
             });
         }

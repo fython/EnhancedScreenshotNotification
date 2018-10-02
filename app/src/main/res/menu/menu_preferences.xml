@@ -9,4 +9,8 @@
           android:title="@string/action_help"
           android:showAsAction="never"/>
 
+    <item android:id="@+id/action_privacy_policy"
+          android:title="@string/action_privacy_policy"
+          android:showAsAction="never"/>
+
 </menu>

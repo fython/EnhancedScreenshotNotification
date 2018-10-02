@@ -47,6 +47,8 @@
 
     <string name="pref_about">关于</string>
     <string name="pref_github_repo">Github 仓库</string>
+    <string name="pref_telegram_discussion">加入 Telegram 群组</string>
+    <string name="pref_telegram_discussion_summary">在群组中讨论增强截图通知、反馈建议</string>
 
     <string name="nevolution_missing_title">需要女娲石（Nevolution）</string>
     <string name="nevolution_missing_content">你必须在使用这个增强程序前安装女娲石，否则我们没法增强截图通知。</string>
@@ -92,6 +94,7 @@
 
     <string name="action_feedback">发送反馈</string>
     <string name="action_help">帮助</string>
+    <string name="action_privacy_policy">隐私政策</string>
 
     <string name="toast_activity_not_found">没有能处理这个操作的应用</string>
 

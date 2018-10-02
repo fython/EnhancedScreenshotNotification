@@ -47,6 +47,8 @@
 
     <string name="pref_about">關於</string>
     <string name="pref_github_repo">Github 倉庫</string>
+    <string name="pref_telegram_discussion">加入 Telegram 群組</string>
+    <string name="pref_telegram_discussion_summary">在群組中討論增強擷圖通知、反饋建議</string>
 
     <string name="nevolution_missing_title">需要女媧石（Nevolution）</string>
     <string name="nevolution_missing_content">你必須在使用這個增强程式前安裝女媧石，否則我們無法增强擷圖通知。</string>
@@ -92,6 +94,7 @@
 
     <string name="action_feedback">發送反饋</string>
     <string name="action_help">幫助</string>
+    <string name="action_privacy_policy">隱私政策</string>
 
     <string name="toast_activity_not_found">沒有能處理這個操作的程式</string>
 
