@@ -10,6 +10,7 @@
     <string name="noti_channel_screenshot_preview">预览中的截图</string>
     <string name="noti_channel_other">其它</string>
     <string name="noti_channel_permission">权限</string>
+    <string name="noti_channel_assistant">助手</string>
 
     <string name="noti_storage_permission_required_title">存储权限请求</string>
     <string name="noti_storage_permission_required_content">为了提供“编辑”操作给新截图通知，增强程序需要存储权限。点击这里开始授权。</string>
@@ -56,6 +57,38 @@
     <string name="pref_preview_in_floating_window_summary_unsupported">你的设备不支持画中画特性或内存较低。</string>
     <string name="pref_replace_notification_with_preview">显示悬浮预览窗代替通知</string>
     <string name="pref_replace_notification_with_preview_summary">隐藏屏幕截图通知并打开一个悬浮预览窗取代它。注意：这会打断你当前画中画活动，如 Chrome、YouTube 的画中画播放。</string>
+
+    <string name="noti_detect_barcode_subtitle">条码识别</string>
+    <string name="pref_detect_barcode">识别截图中的条码/二维码</string>
+    <string name="pref_detect_barcode_summary">帮助你在屏幕截图的条码中读出文本、链接、联系人、电话等信息，并快速进行相关操作（例如在浏览器打开）。\n\n备注：完成截图前不会开始任何检测。</string>
+    <string name="action_view_barcode">查看条码</string>
+    <string name="noti_view_barcode_title_default">在截图中找到条码</string>
+    <string name="noti_view_barcode_text_multi">找到 %d 个条码，点击这里选择操作。</string>
+    <string name="noti_view_barcode_text_single">内容：%s</string>
+    <string name="noti_view_barcode_title_url">在截图中找到链接</string>
+    <string name="noti_view_barcode_text_url">%s</string>
+    <string name="noti_view_barcode_title_phone">在截图中找到电话</string>
+    <string name="noti_view_barcode_text_phone">电话号码：%s</string>
+    <string name="toast_copied">已复制</string>
+    <string name="noti_view_barcode_title_contact">在截图中找到联系人卡片</string>
+    <string name="noti_view_barcode_text_contact">电话号码：%s</string>
+    <string name="action_add_to_contacts">新增到通讯录</string>
+    <string name="undefined">未定义</string>
+    <string name="barcode_type_unknown">未知类型</string>
+    <string name="barcode_type_contact_info">联系人信息</string>
+    <string name="barcode_type_email">电子邮箱</string>
+    <string name="barcode_type_isbn">ISBN</string>
+    <string name="barcode_type_phone">电话</string>
+    <string name="barcode_type_product">产品</string>
+    <string name="barcode_type_sms">短信</string>
+    <string name="barcode_type_text">文本</string>
+    <string name="barcode_type_url">链接</string>
+    <string name="barcode_type_wifi">Wi-Fi</string>
+    <string name="barcode_type_geo">位置</string>
+    <string name="barcode_type_calendar_event">日期事件</string>
+    <string name="barcode_type_driver_license">驾照</string>
+    <string name="action_open_link">打开链接</string>
+    <string name="action_call">呼叫</string>
 
     <string name="action_feedback">发送反馈</string>
     <string name="action_help">帮助</string>

@@ -10,6 +10,7 @@
     <string name="noti_channel_screenshot_preview">預覽中的擷圖</string>
     <string name="noti_channel_other">其他</string>
     <string name="noti_channel_permission">權限</string>
+    <string name="noti_channel_assistant">幫手</string>
 
     <string name="noti_storage_permission_required_title">儲存權限請求</string>
     <string name="noti_storage_permission_required_content">爲了提供「編輯」操作給新擷圖通知，增强程式需要儲存權限。點擊這裏開始授權。</string>
@@ -56,6 +57,38 @@
     <string name="pref_preview_in_floating_window_summary_unsupported">你的設備不支援子母畫面特性或内存較低。</string>
     <string name="pref_replace_notification_with_preview">顯示浮動預覽窗替代通知</string>
     <string name="pref_replace_notification_with_preview_summary">隱匿熒幕擷圖通知並打開一個浮動窗口取代之。注意：這會中斷你當前子母畫面活動，如 Chrome、YouTube 的子母畫面播放。</string>
+
+    <string name="noti_detect_barcode_subtitle">條碼識別</string>
+    <string name="pref_detect_barcode">識別條碼/二維碼</string>
+    <string name="pref_detect_barcode_summary">協助你在熒幕擷圖的條碼中讀出文本、鏈接、聯絡人、電話等信息，并快速進行相關操作（例如在瀏覽器打開）。\n\n備註：完成擷圖前不會開始任何檢測。</string>
+    <string name="action_view_barcode">檢視條碼</string>
+    <string name="noti_view_barcode_title_default">在擷圖中找到條碼</string>
+    <string name="noti_view_barcode_text_multi">找到 %d 個條碼，點擊這裡選擇操作。</string>
+    <string name="noti_view_barcode_text_single">內容：%s</string>
+    <string name="noti_view_barcode_title_url">在擷圖中找到鏈接</string>
+    <string name="noti_view_barcode_text_url">%s</string>
+    <string name="noti_view_barcode_title_phone">在擷圖中找到電話</string>
+    <string name="noti_view_barcode_text_phone">電話號碼：%s</string>
+    <string name="toast_copied">已拷貝</string>
+    <string name="noti_view_barcode_title_contact">在擷圖中找到聯絡人卡片</string>
+    <string name="noti_view_barcode_text_contact">電話號碼：%s</string>
+    <string name="action_add_to_contacts">新增到聯絡簿</string>
+    <string name="undefined">未定義</string>
+    <string name="barcode_type_unknown">未知類型</string>
+    <string name="barcode_type_contact_info">聯絡人訊息</string>
+    <string name="barcode_type_email">電子郵箱</string>
+    <string name="barcode_type_isbn">ISBN</string>
+    <string name="barcode_type_phone">電話</string>
+    <string name="barcode_type_product">產品</string>
+    <string name="barcode_type_sms">簡訊</string>
+    <string name="barcode_type_text">文本</string>
+    <string name="barcode_type_url">鏈接</string>
+    <string name="barcode_type_wifi">Wi-Fi</string>
+    <string name="barcode_type_geo">位置</string>
+    <string name="barcode_type_calendar_event">日期事件</string>
+    <string name="barcode_type_driver_license">駕照</string>
+    <string name="action_open_link">打開鏈接</string>
+    <string name="action_call">呼叫</string>
 
     <string name="action_feedback">發送反饋</string>
     <string name="action_help">幫助</string>

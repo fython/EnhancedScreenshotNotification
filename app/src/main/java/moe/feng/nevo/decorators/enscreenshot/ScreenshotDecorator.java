@@ -800,7 +800,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                 return;
             }
 
-            Toast.makeText(context, R.string.toast_copied_url, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.toast_copied, Toast.LENGTH_LONG).show();
 
             final ClipboardManager manager = Objects.requireNonNull(context.getSystemService(ClipboardManager.class));
             final ClipData clipData = ClipData.newPlainText("url", intent.getStringExtra("data"));

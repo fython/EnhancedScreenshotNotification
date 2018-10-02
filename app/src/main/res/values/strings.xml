@@ -74,7 +74,7 @@
     <string name="noti_view_barcode_text_url">%s</string>
     <string name="noti_view_barcode_title_phone">Phone number found in screenshot!</string>
     <string name="noti_view_barcode_text_phone">Tel: %s</string>
-    <string name="toast_copied_url">Copied URL</string>
+    <string name="toast_copied">Copied</string>
     <string name="noti_view_barcode_title_contact">Contact card found in screenshot!</string>
     <string name="noti_view_barcode_text_contact">Phone number: %s</string>
     <string name="action_add_to_contacts">Add to contacts</string>
