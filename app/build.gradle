@@ -27,6 +27,7 @@ dependencies {
     final androidxVersion = '1.0.0'
     implementation "androidx.annotation:annotation:$androidxVersion"
     implementation "androidx.core:core:$androidxVersion"
+    implementation "androidx.recyclerview:recyclerview:$androidxVersion"
     implementation 'net.grandcentrix.tray:tray:0.12.0'
     implementation 'com.google.firebase:firebase-core:16.0.3'
     implementation 'com.google.firebase:firebase-ml-vision:17.0.0'

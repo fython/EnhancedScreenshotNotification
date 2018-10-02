@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Transparent.Full" parent="android:Theme.Translucent.NoTitleBar">
+    <style name="Theme.Transparent.Full" parent="android:Theme.Material.Light">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
@@ -9,6 +15,14 @@
 
     <style name="AppTheme.Preview" parent="android:Theme.Translucent.NoTitleBar">
         <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+    <style name="Widget.Material.Button.FlatRoundWithBorder" parent="android:Widget.Material.Button.Borderless.Small">
+        <item name="android:background">@drawable/material_button_flat_with_border</item>
+        <item name="android:textColor">?android:colorAccent</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
     </style>
 
 </resources>

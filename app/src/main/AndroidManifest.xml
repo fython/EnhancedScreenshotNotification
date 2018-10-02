@@ -45,6 +45,18 @@
                   android:taskAffinity=""
                   android:theme="@style/Theme.Transparent.Full"/>
 
+        <activity android:name=".ViewBarcodeActivity"
+                  android:exported="true"
+                  android:noHistory="true"
+                  android:excludeFromRecents="true"
+                  android:taskAffinity=""
+                  android:theme="@style/Theme.Transparent.Full">
+            <intent-filter>
+                <action android:name="moe.feng.intent.action.VIEW_BARCODE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
         <activity android:name=".PreviewActivity"
                   android:resizeableActivity="true"
                   android:supportsPictureInPicture="true"
@@ -72,6 +84,8 @@
         <receiver android:name=".ScreenshotDecoratorSettingsReceiver"
                   android:permission="com.oasisfeng.nevo.permission.BIND_DECORATOR_SERVICE"
                   android:exported="true"/>
+
+        <receiver android:name=".ScreenshotDecorator$CopyUrlReceiver"/>
 
         <provider android:authorities="${applicationId}.provider.files"
                   android:name="androidx.core.content.FileProvider"

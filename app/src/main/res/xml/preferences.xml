@@ -27,6 +27,12 @@
             android:summary="@string/pref_replace_notification_with_preview_summary"
             android:defaultValue="false"/>
 
+    <SwitchPreference
+            android:key="detect_barcode"
+            android:title="@string/pref_detect_barcode"
+            android:summary="@string/pref_detect_barcode_summary"
+            android:defaultValue="false"/>
+
     <PreferenceCategory android:title="@string/category_share_action">
 
         <ListPreference

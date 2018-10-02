@@ -9,6 +9,7 @@
     <string name="noti_channel_screenshot_preview">Previewing screenshots</string>
     <string name="noti_channel_other">Other</string>
     <string name="noti_channel_permission">Permissions</string>
+    <string name="noti_channel_assistant">Assistant</string>
 
     <string name="noti_storage_permission_required_title">Storage permission required</string>
     <string name="noti_storage_permission_required_content">To provide \"Edit\" action for new screenshot, decorator application requires storage permission. Click here to request permission.</string>
@@ -61,6 +62,38 @@
     <string name="pref_preview_in_floating_window_summary_unsupported">Your device haven\'t supported Picture in Picture feature or it\'s in low memory.</string>
     <string name="pref_replace_notification_with_preview">Show floating preview window instead</string>
     <string name="pref_replace_notification_with_preview_summary">Hide screenshot notification and open a floating preview window instead. Caution: It will interrupt current Picture in Picture activity like Chrome, YouTube\'s PiP.</string>
+
+    <string name="noti_detect_barcode_subtitle">Barcode detection</string>
+    <string name="pref_detect_barcode">Detect barcode in screenshot</string>
+    <string name="pref_detect_barcode_summary">Help you read text, url, contacts, phone and etc from barcode in screenshot and do actions with them quickly (for example, open link in browser).\n\nPS: It won\'t start any detection before finishing capturing.</string>
+    <string name="action_view_barcode">View barcode</string>
+    <string name="noti_view_barcode_title_default">Barcode found in screenshot!</string>
+    <string name="noti_view_barcode_text_multi">Found %d barcode(s). Click here to choose action.</string>
+    <string name="noti_view_barcode_text_single">Content: %s</string>
+    <string name="noti_view_barcode_title_url">URL found in screenshot</string>
+    <string name="noti_view_barcode_text_url">%s</string>
+    <string name="noti_view_barcode_title_phone">Phone number found in screenshot!</string>
+    <string name="noti_view_barcode_text_phone">Tel: %s</string>
+    <string name="toast_copied_url">Copied URL</string>
+    <string name="noti_view_barcode_title_contact">Contact card found in screenshot!</string>
+    <string name="noti_view_barcode_text_contact">Phone number: %s</string>
+    <string name="action_add_to_contacts">Add to contacts</string>
+    <string name="undefined">Undefined</string>
+    <string name="barcode_type_unknown">Unknown</string>
+    <string name="barcode_type_contact_info">Contact info</string>
+    <string name="barcode_type_email">Email</string>
+    <string name="barcode_type_isbn">ISBN</string>
+    <string name="barcode_type_phone">Phone</string>
+    <string name="barcode_type_product">Product</string>
+    <string name="barcode_type_sms">SMS</string>
+    <string name="barcode_type_text">Text</string>
+    <string name="barcode_type_url">URL</string>
+    <string name="barcode_type_wifi">Wi-Fi</string>
+    <string name="barcode_type_geo">Geo</string>
+    <string name="barcode_type_calendar_event">Calendar event</string>
+    <string name="barcode_type_driver_license">Driver license</string>
+    <string name="action_open_link">Open link</string>
+    <string name="action_call">Call</string>
 
     <string name="action_feedback">Send feedback</string>
     <string name="action_help">Help</string>

@@ -14,23 +14,27 @@ import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 
+import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetector;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.oasisfeng.nevo.sdk.MutableNotification;
 import com.oasisfeng.nevo.sdk.MutableStatusBarNotification;
 import com.oasisfeng.nevo.sdk.NevoDecoratorService;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import moe.feng.nevo.decorators.enscreenshot.utils.FileUtils;
-import moe.feng.nevo.decorators.enscreenshot.utils.IntentUtils;
-import moe.feng.nevo.decorators.enscreenshot.utils.Singleton;
+import moe.feng.nevo.decorators.enscreenshot.utils.*;
 
 public final class ScreenshotDecorator extends NevoDecoratorService {
 
@@ -44,13 +48,17 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             BuildConfig.APPLICATION_ID + ".extra.ORIGINAL_PENDING_INTENT";
     private static final String EXTRA_RECENT_SHOT =
             BuildConfig.APPLICATION_ID + ".extra.RECENT_SHOT";
+    private static final String EXTRA_DATA =
+            BuildConfig.APPLICATION_ID + ".extra.DATA";
 
     private static final String CHANNEL_ID_SCREENSHOT = "screenshot";
     private static final String CHANNEL_ID_PREVIEWED_SCREENSHOT = "previewed";
     private static final String CHANNEL_ID_OTHER = "other";
     private static final String CHANNEL_ID_PERMISSION = "permission";
+    private static final String CHANNEL_ID_ASSISTANT = "assistant";
 
     private static final int NOTIFICATION_ID_REQUEST_PERMISSION = 10;
+    private static final int NOTIFICATION_ID_BARCODE = 11;
 
     private static final String ACTION_SHARE_SCREENSHOT =
             BuildConfig.APPLICATION_ID + ".action.SHARE_SCREENSHOT";
@@ -63,12 +71,18 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
     private final BroadcastReceiver mDeleteReceiver = new DeleteActionReceiver();
     private final BroadcastReceiver mCancelNotiReceiver = new CancelActionReceiver();
 
+    private FirebaseApp mFirebase;
+    private FirebaseVisionBarcodeDetector mBarcodeDetector;
+
     @SuppressWarnings("NullableProblems")
     @NonNull
     private ScreenshotPreferences mPreferences;
 
     @Nullable
     private Uri mLastPreviewedShotUri = null;
+
+    @Nullable
+    private CompletableFuture mDetectBarcodeTask = null;
 
     private final Singleton<Icon> mDeleteIcon = Singleton.by(() ->
             Icon.createWithResource(this, R.drawable.ic_delete_black_24dp));
@@ -78,6 +92,9 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
     @Override
     protected void onConnected() {
         mPreferences = new ScreenshotPreferences(this);
+
+        mFirebase = DecoratorApplication.getFirebaseApp();
+        mBarcodeDetector = FirebaseVision.getInstance(mFirebase).getVisionBarcodeDetector();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             ensureEvolvedNotificationChannel();
@@ -282,6 +299,10 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                             getString(R.string.screenshots_count_format, shots.length));
                 }
                 if (recentShot != null) {
+                    if (mPreferences.shouldDetectBarcode()) {
+                        detectBarcode();
+                    }
+
                     // Add screenshot details to notification
                     if (mPreferences.isShowScreenshotDetails()) {
                         setupDetails();
@@ -469,6 +490,167 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             }
         }
 
+        private void detectBarcode() {
+            if (mDetectBarcodeTask != null && !mDetectBarcodeTask.isCancelled()) {
+                mDetectBarcodeTask.cancel(true);
+            }
+            mDetectBarcodeTask = CompletableFuture.runAsync(() -> {
+                try {
+                    final FirebaseVisionImage image = FirebaseVisionImage.fromFilePath(context, recentShotUri);
+                    mBarcodeDetector.detectInImage(image)
+                            .addOnSuccessListener(Executors.mainThread(), res -> {
+                                final ArrayList<Barcode> values = (ArrayList<Barcode>) res.stream()
+                                        .map(MyFirebaseHelper::getBarcode)
+                                        .collect(Collectors.toList());
+                                if (!values.isEmpty()) {
+                                    showBarcodeAction(values);
+                                }
+                            });
+                } catch (IOException e) {
+                    Log.e(TAG, "Failed to detect barcode.", e);
+                }
+            });
+        }
+
+        private void showBarcodeAction(@NonNull ArrayList<Barcode> values) {
+            final Intent viewIntent = new Intent(ViewBarcodeActivity.ACTION);
+            viewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            viewIntent.putParcelableArrayListExtra(ViewBarcodeActivity.EXTRA_BARCODE, values);
+            final PendingIntent viewBarcodePi = PendingIntent
+                    .getActivity(context, 0, viewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            final Notification.Builder builder = new Notification.Builder(context);
+            final NotificationManager manager = Objects.requireNonNull(
+                    context.getSystemService(NotificationManager.class));
+
+            builder.setSmallIcon(R.drawable.ic_assistant_white_24dp);
+            builder.setColor(context.getColor(R.color.blue_grey_500));
+            builder.setAutoCancel(true);
+            builder.setShowWhen(true);
+            builder.setWhen(System.currentTimeMillis());
+            builder.setSubText(context.getString(R.string.noti_detect_barcode_subtitle));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                builder.setChannelId(CHANNEL_ID_ASSISTANT);
+
+                NotificationChannel channel = new NotificationChannel(CHANNEL_ID_ASSISTANT,
+                        context.getString(R.string.noti_channel_assistant),
+                        NotificationManager.IMPORTANCE_HIGH);
+                manager.createNotificationChannel(channel);
+            }
+
+            boolean unset = true;
+            if (values.size() == 1) {
+                final Barcode value = values.get(0);
+                switch (value.valueFormat) {
+                    case Barcode.URL: {
+                        builder.setContentTitle(context.getString(R.string.noti_view_barcode_title_url));
+                        builder.setContentText(context.getString(R.string.noti_view_barcode_text_url, value.rawValue));
+
+                        builder.addAction(new Notification.Action.Builder(
+                                mShareIcon.get(),
+                                context.getString(R.string.action_open_link),
+                                PendingIntent.getActivity(context, 0,
+                                        Intent.createChooser(IntentUtils.createViewIntent(Uri.parse(value.rawValue)),
+                                                context.getString(R.string.action_view_barcode)),
+                                        PendingIntent.FLAG_UPDATE_CURRENT)
+                        ).build());
+                        builder.addAction(new Notification.Action.Builder(
+                                mShareIcon.get(),
+                                context.getString(android.R.string.copyUrl),
+                                PendingIntent.getBroadcast(context, 1,
+                                        IntentUtils.createCopyIntent(value.rawValue),
+                                        PendingIntent.FLAG_CANCEL_CURRENT)
+                        ).build());
+                        unset = false;
+                        break;
+                    }
+                    case Barcode.PHONE: {
+                        final String telNumber = value.phone.number;
+                        builder.setContentTitle(context.getString(R.string.noti_view_barcode_title_phone));
+                        builder.setContentText(context.getString(R.string.noti_view_barcode_text_phone, telNumber));
+
+                        builder.addAction(new Notification.Action.Builder(
+                                mShareIcon.get(),
+                                context.getString(R.string.action_call),
+                                PendingIntent.getActivity(context, 0,
+                                        IntentUtils.createDialIntent(Uri.parse(value.rawValue)),
+                                        PendingIntent.FLAG_CANCEL_CURRENT)
+                        ).build());
+                        builder.addAction(new Notification.Action.Builder(
+                                mShareIcon.get(),
+                                context.getString(android.R.string.copy),
+                                PendingIntent.getBroadcast(context, 1,
+                                        IntentUtils.createCopyIntent(value.phone.number),
+                                        PendingIntent.FLAG_CANCEL_CURRENT)
+                        ).build());
+                        unset = false;
+                        break;
+                    }
+                    case Barcode.CONTACT_INFO: {
+                        String phoneNumber = null;
+                        if (value.contactInfo.phones != null && value.contactInfo.phones.length > 0) {
+                            phoneNumber = Arrays.stream(value.contactInfo.phones)
+                                    .map(phone -> phone.number)
+                                    .reduce((total, acc) -> total + ", " + acc).get();
+                        }
+                        builder.setContentTitle(context.getString(R.string.noti_view_barcode_title_contact));
+                        builder.setContentText(context.getString(R.string.noti_view_barcode_text_contact,
+                                Optional.ofNullable(phoneNumber).orElse(context.getString(R.string.undefined))));
+
+                        final Intent addContactIntent = IntentUtils.createAddContactFromBarcode(value);
+                        builder.addAction(new Notification.Action.Builder(
+                                mShareIcon.get(),
+                                context.getString(R.string.action_add_to_contacts),
+                                PendingIntent.getActivity(context, 1,
+                                        addContactIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+                        ).build());
+                        builder.addAction(new Notification.Action.Builder(
+                                mShareIcon.get(),
+                                context.getString(android.R.string.copy),
+                                PendingIntent.getBroadcast(context, 2,
+                                        IntentUtils.createCopyIntent(value.rawValue),
+                                        PendingIntent.FLAG_CANCEL_CURRENT)
+                        ).build());
+                        unset = false;
+                        break;
+                    }
+                    case Barcode.EMAIL: {
+                        // TODO Support email barcode
+                        break;
+                    }
+                    case Barcode.GEO: {
+                        // TODO Support geo
+                        break;
+                    }
+                    case Barcode.WIFI: {
+                        // TODO Support Wi-Fi
+                        break;
+                    }
+                    default: {
+                        builder.setContentTitle(context.getString(R.string.noti_view_barcode_title_default));
+                        builder.setContentText(context.getString(R.string.noti_view_barcode_text_single, value.rawValue));
+
+                        builder.addAction(new Notification.Action.Builder(
+                                mShareIcon.get(),
+                                context.getString(android.R.string.copy),
+                                PendingIntent.getBroadcast(context, 1,
+                                        IntentUtils.createCopyIntent(value.rawValue),
+                                        PendingIntent.FLAG_CANCEL_CURRENT)
+                        ).build());
+                        unset = false;
+                    }
+                }
+            }
+            if (unset) {
+                builder.setContentTitle(context.getString(R.string.noti_view_barcode_title_default));
+                builder.setContentText(context.getString(R.string.noti_view_barcode_text_multi, values.size()));
+                builder.setContentIntent(viewBarcodePi);
+            }
+
+            manager.notify(NOTIFICATION_ID_BARCODE, builder.build());
+        }
+
         @RequiresApi(api = Build.VERSION_CODES.O)
         private void startFloatingPreviewAndMuteNotification() {
             // Avoid duplicated preview
@@ -606,5 +788,25 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             cancelNotification(intent.getStringExtra("key"));
         }
 
+    }
+
+    public static class CopyUrlReceiver extends BroadcastReceiver {
+
+        public static final ComponentName COMPONENT_NAME = ComponentName.createRelative(BuildConfig.APPLICATION_ID, CopyUrlReceiver.class.getName());
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent == null || !intent.hasExtra("data")) {
+                return;
+            }
+
+            Toast.makeText(context, R.string.toast_copied_url, Toast.LENGTH_LONG).show();
+
+            final ClipboardManager manager = Objects.requireNonNull(context.getSystemService(ClipboardManager.class));
+            final ClipData clipData = ClipData.newPlainText("url", intent.getStringExtra("data"));
+            manager.setPrimaryClip(clipData);
+
+            IntentUtils.closeSystemDialogs(context);
+        }
     }
 }

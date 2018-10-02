@@ -127,6 +127,7 @@ public class PreferencesActivity extends Activity {
         private static final String KEY_SHOW_SCREENSHOT_DETAILS = "show_screenshot_details";
         private static final String KEY_PREVIEW_IN_FLOATING_WINDOW = "preview_in_floating_window";
         private static final String KEY_REPLACE_NOTIFICATION_WITH_PREVIEW = "replace_notification_with_preview";
+        private static final String KEY_DETECT_BARCODE = "detect_barcode";
 
         private static final int REQUEST_PERMISSION = 10;
 
@@ -140,6 +141,7 @@ public class PreferencesActivity extends Activity {
         private CheckBoxPreference mShowScreenshotDetails;
         private SwitchPreference mPreviewInFloatingWindow;
         private SwitchPreference mReplaceNotificationWithPreview;
+        private SwitchPreference mDetectBarcode;
 
         private ScreenshotPreferences mPreferences;
 
@@ -185,6 +187,7 @@ public class PreferencesActivity extends Activity {
             mPreviewInFloatingWindow = (SwitchPreference) findPreference(KEY_PREVIEW_IN_FLOATING_WINDOW);
             mReplaceNotificationWithPreview = (SwitchPreference) findPreference(KEY_REPLACE_NOTIFICATION_WITH_PREVIEW);
             final Preference githubPref = findPreference(KEY_GITHUB_REPO);
+            mDetectBarcode = (SwitchPreference) findPreference(KEY_DETECT_BARCODE);
 
             updateUiActionAfterSharing();
             updateUiStoragePermission();
@@ -195,6 +198,7 @@ public class PreferencesActivity extends Activity {
             updateUiShowScreenshotDetails();
             updatePreviewInFloatingWindow();
             updateReplaceNotificationWithPreview();
+            updateDetectBarcode();
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 getPreferenceScreen().removePreference(findPreference("notification_settings"));
@@ -251,6 +255,10 @@ public class PreferencesActivity extends Activity {
                 } catch (ActivityNotFoundException e) {
                     Toast.makeText(getActivity(), R.string.toast_activity_not_found, Toast.LENGTH_LONG).show();
                 }
+                return true;
+            });
+            mDetectBarcode.setOnPreferenceChangeListener((p, o) -> {
+                mPreferences.setDetectBarcode((boolean) o);
                 return true;
             });
         }
@@ -396,6 +404,10 @@ public class PreferencesActivity extends Activity {
 
         private void updateReplaceNotificationWithPreview() {
             mReplaceNotificationWithPreview.setChecked(mPreferences.isReplaceNotificationWithPreview());
+        }
+
+        private void updateDetectBarcode() {
+            mDetectBarcode.setChecked(mPreferences.shouldDetectBarcode());
         }
 
         @Override

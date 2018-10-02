@@ -7,4 +7,20 @@
         <item>2</item>
     </string-array>
 
+    <string-array name="barcode_types">
+        <item>@string/barcode_type_unknown</item>
+        <item>@string/barcode_type_contact_info</item>
+        <item>@string/barcode_type_email</item>
+        <item>@string/barcode_type_isbn</item>
+        <item>@string/barcode_type_phone</item>
+        <item>@string/barcode_type_product</item>
+        <item>@string/barcode_type_sms</item>
+        <item>@string/barcode_type_text</item>
+        <item>@string/barcode_type_url</item>
+        <item>@string/barcode_type_wifi</item>
+        <item>@string/barcode_type_geo</item>
+        <item>@string/barcode_type_calendar_event</item>
+        <item>@string/barcode_type_driver_license</item>
+    </string-array>
+
 </resources>

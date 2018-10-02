@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       android:shape="rectangle">
+
+    <size android:height="@dimen/round_button_height"/>
+
+    <stroke android:color="?android:textColorSecondary" android:width="@dimen/round_button_border_width"/>
+
+    <solid android:color="?android:colorBackground"/>
+
+    <corners android:radius="@dimen/round_button_radius"/>
+
+</shape>

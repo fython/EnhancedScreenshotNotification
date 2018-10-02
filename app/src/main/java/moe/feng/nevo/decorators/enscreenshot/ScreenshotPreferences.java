@@ -42,7 +42,7 @@ public final class ScreenshotPreferences {
     private static final String KEY_SHOW_SCREENSHOT_DETAILS = "show_screenshot_details";
     private static final String KEY_PREVIEW_FLOATING_WINDOW = "preview_floating_window";
     private static final String KEY_REPLACE_NOTIFICATION_WITH_PREVIEW = "replace_notification_with_preview";
-    private static final String KEY_DETECT_QR_CODE = "detect_qr_code";
+    private static final String KEY_DETECT_BARCODE = "detect_barcode";
 
     private static final File DEFAULT_SCREENSHOT_PATH =
             new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
@@ -150,8 +150,8 @@ public final class ScreenshotPreferences {
         return mPreferences.getBoolean(KEY_REPLACE_NOTIFICATION_WITH_PREVIEW, false);
     }
 
-    public boolean shouldDetectQrCode() {
-        return mPreferences.getBoolean(KEY_DETECT_QR_CODE, false);
+    public boolean shouldDetectBarcode() {
+        return mPreferences.getBoolean(KEY_DETECT_BARCODE, false);
     }
 
     public void setScreenshotPath(@Nullable String screenshotPath) {
@@ -203,7 +203,7 @@ public final class ScreenshotPreferences {
         mPreferences.put(KEY_REPLACE_NOTIFICATION_WITH_PREVIEW, bool);
     }
 
-    public void setDetectQrCode(boolean bool) {
-        mPreferences.put(KEY_DETECT_QR_CODE, bool);
+    public void setDetectBarcode(boolean bool) {
+        mPreferences.put(KEY_DETECT_BARCODE, bool);
     }
 }
