@@ -25,10 +25,7 @@ import java.util.concurrent.Future;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import moe.feng.nevo.decorators.enscreenshot.utils.DeviceInfoPrinter;
-import moe.feng.nevo.decorators.enscreenshot.utils.FormatUtils;
-import moe.feng.nevo.decorators.enscreenshot.utils.IntentUtils;
-import moe.feng.nevo.decorators.enscreenshot.utils.Executors;
+import moe.feng.nevo.decorators.enscreenshot.utils.*;
 
 public class PreferencesActivity extends Activity {
 
@@ -80,6 +77,10 @@ public class PreferencesActivity extends Activity {
                         .show();
             }
         }, Executors.mainThread());
+
+        if (!PermissionUtils.canDrawOverlays(this)) {
+            PermissionUtils.requestOverlayPermission(this, 0);
+        }
     }
 
     @Override

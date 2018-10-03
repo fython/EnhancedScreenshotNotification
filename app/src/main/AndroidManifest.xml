@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
         android:name=".DecoratorApplication"
@@ -18,8 +20,6 @@
 
         <activity android:name=".PreferencesActivity"
                   android:exported="true"
-                  android:noHistory="true"
-                  android:taskAffinity=""
                   android:theme="@android:style/Theme.Material.Light">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES"/>
@@ -28,9 +28,7 @@
 
         <activity-alias android:name=".LaunchActivity"
                         android:targetActivity=".PreferencesActivity"
-                        android:enabled="true"
-                        android:noHistory="true"
-                        android:taskAffinity="">
+                        android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -80,6 +78,10 @@
             <meta-data android:name="packages" android:value="com.android.systemui|com.oneplus.screenshot" />
             <meta-data android:name="settings.receiver" android:value="ScreenshotDecoratorSettingsReceiver" />
         </service>
+
+        <service android:name=".service.PreviewService"
+                 android:exported="false"
+                 android:process=":preview"/>
 
         <receiver android:name=".ScreenshotDecoratorSettingsReceiver"
                   android:permission="com.oasisfeng.nevo.permission.BIND_DECORATOR_SERVICE"

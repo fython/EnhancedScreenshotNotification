@@ -16,6 +16,7 @@ import android.util.Log;
 
 import android.widget.Toast;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.firebase.FirebaseApp;
@@ -34,7 +35,10 @@ import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import moe.feng.nevo.decorators.enscreenshot.service.PreviewService;
 import moe.feng.nevo.decorators.enscreenshot.utils.*;
+
+import static moe.feng.nevo.decorators.enscreenshot.Constants.*;
 
 public final class ScreenshotDecorator extends NevoDecoratorService {
 
@@ -50,15 +54,6 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             BuildConfig.APPLICATION_ID + ".extra.RECENT_SHOT";
     private static final String EXTRA_DATA =
             BuildConfig.APPLICATION_ID + ".extra.DATA";
-
-    private static final String CHANNEL_ID_SCREENSHOT = "screenshot";
-    private static final String CHANNEL_ID_PREVIEWED_SCREENSHOT = "previewed";
-    private static final String CHANNEL_ID_OTHER = "other";
-    private static final String CHANNEL_ID_PERMISSION = "permission";
-    private static final String CHANNEL_ID_ASSISTANT = "assistant";
-
-    private static final int NOTIFICATION_ID_REQUEST_PERMISSION = 10;
-    private static final int NOTIFICATION_ID_BARCODE = 11;
 
     private static final String ACTION_SHARE_SCREENSHOT =
             BuildConfig.APPLICATION_ID + ".action.SHARE_SCREENSHOT";
@@ -327,6 +322,8 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                             && previewIntent != null) {
                         startFloatingPreviewAndMuteNotification();
                     }
+
+                    ContextCompat.startForegroundService(context, PreviewService.createStartIntent(recentShotUri));
                 }
 
                 // Set notification channel
@@ -524,7 +521,7 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
                     context.getSystemService(NotificationManager.class));
 
             builder.setSmallIcon(R.drawable.ic_assistant_white_24dp);
-            builder.setColor(context.getColor(R.color.blue_grey_500));
+            builder.setColor(context.getColor(R.color.material_blue_grey_500));
             builder.setAutoCancel(true);
             builder.setShowWhen(true);
             builder.setWhen(System.currentTimeMillis());

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<moe.feng.nevo.decorators.enscreenshot.widget.RoundRectFrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/material_grey_100"
+        android:elevation="@dimen/floating_window_elevation">
+
+    <LinearLayout
+            android:id="@+id/view_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:ignore="UselessParent">
+
+        <ImageView android:id="@+id/image_view"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:clickable="true"
+                   android:focusable="true"
+                   android:foreground="?android:selectableItemBackground"
+                   android:scaleType="centerInside"
+                   android:importantForAccessibility="no"
+                   tools:src="@tools:sample/backgrounds/scenic"
+                   tools:scaleType="centerCrop"
+                   tools:layout_height="240dp"
+                   tools:layout_width="120dp"/>
+
+        <LinearLayout android:id="@+id/button_bar"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:minHeight="40dp"
+                      android:orientation="horizontal"
+                      android:background="@color/material_grey_100"
+                      android:visibility="gone"
+                      android:gravity="center"
+                      tools:visibility="visible">
+
+            <ImageView android:id="@+id/edit_button"
+                       android:layout_width="30dp"
+                       android:layout_height="30dp"
+                       android:padding="4dp"
+                       android:clickable="true"
+                       android:focusable="true"
+                       android:background="?android:selectableItemBackgroundBorderless"
+                       android:src="@drawable/ic_edit_white_24dp"
+                       android:tint="?android:colorAccent"
+                       android:contentDescription="@string/action_edit"/>
+
+            <ImageView android:id="@+id/share_button"
+                       android:layout_width="30dp"
+                       android:layout_height="30dp"
+                       android:padding="4dp"
+                       android:clickable="true"
+                       android:focusable="true"
+                       android:background="?android:selectableItemBackgroundBorderless"
+                       android:src="@drawable/ic_share_white_24dp"
+                       android:tint="?android:colorAccent"
+                       android:layout_marginStart="12dp"
+                       android:contentDescription="@string/action_share_screenshot"/>
+
+            <ImageView android:id="@+id/delete_button"
+                       android:layout_width="30dp"
+                       android:layout_height="30dp"
+                       android:padding="4dp"
+                       android:clickable="true"
+                       android:focusable="true"
+                       android:background="?android:selectableItemBackgroundBorderless"
+                       android:src="@drawable/ic_delete_white_24dp"
+                       android:tint="?android:colorAccent"
+                       android:layout_marginStart="12dp"
+                       android:contentDescription="@string/action_delete_screenshot"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</moe.feng.nevo.decorators.enscreenshot.widget.RoundRectFrameLayout>

@@ -10,6 +10,7 @@
     <string name="noti_channel_other">Other</string>
     <string name="noti_channel_permission">Permissions</string>
     <string name="noti_channel_assistant">Assistant</string>
+    <string name="noti_channel_preview_service">Preview</string>
 
     <string name="noti_storage_permission_required_title">Storage permission required</string>
     <string name="noti_storage_permission_required_content">To provide \"Edit\" action for new screenshot, decorator application requires storage permission. Click here to request permission.</string>
@@ -104,5 +105,9 @@
     <string name="action_privacy_policy_url" translatable="false">https://gwo.app/esn/privacy_policy</string>
 
     <string name="toast_activity_not_found">No apps to handle this action.</string>
+
+    <string name="noti_preview_service_title">Screenshot preview is showing.</string>
+    <string name="noti_preview_service_text">You can change notification channel priority to hide this notification.</string>
+    <string name="action_stop">Stop</string>
 
 </resources>

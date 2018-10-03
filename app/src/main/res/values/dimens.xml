@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Flat round button with border -->
     <dimen name="round_button_height">36dp</dimen>
     <dimen name="round_button_radius">18dp</dimen>
     <dimen name="round_button_border_width">1dp</dimen>
+    
+    <!-- Floating window design -->
+    <dimen name="floating_window_elevation">16dp</dimen>
+    <dimen name="floating_window_margin">8dp</dimen>
+    <dimen name="floating_window_corner_radius">8dp</dimen>
 
 </resources>
