@@ -10,5 +10,7 @@
     <dimen name="floating_window_elevation">16dp</dimen>
     <dimen name="floating_window_margin">8dp</dimen>
     <dimen name="floating_window_corner_radius">8dp</dimen>
+    <dimen name="view_icon_size">24dp</dimen>
+    <dimen name="view_icon_min_margin">8dp</dimen>
 
 </resources>

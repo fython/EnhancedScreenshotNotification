@@ -1,30 +1,33 @@
 package moe.feng.nevo.decorators.enscreenshot.service;
 
+import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.*;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.PixelFormat;
+import android.graphics.*;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
-import android.transition.AutoTransition;
-import android.transition.TransitionManager;
 import android.util.Log;
 import android.util.Pair;
 import android.view.*;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import moe.feng.nevo.decorators.enscreenshot.BuildConfig;
 import moe.feng.nevo.decorators.enscreenshot.R;
 import moe.feng.nevo.decorators.enscreenshot.utils.Executors;
+import moe.feng.nevo.decorators.enscreenshot.widget.PreviewActionForegroundDrawable;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -60,20 +63,13 @@ public class PreviewService extends Service {
     private Notification mForegroundNotification;
 
     private WindowManager.LayoutParams mLayoutParams;
-    private View mRootView;
-    private ImageView mImageView;
-    private LinearLayout mViewContainer, mButtonBar;
-
-    private boolean mExpanded = false;
+    private ViewHolder mViewHolder;
 
     private Uri mImageUri;
 
     private Pair<Uri, Bitmap> mLoadedData;
 
     private Future mStartPreviewTask;
-
-    private float mScale = 0.5f;
-    private float mExpandedScale = 0.8f;
 
     @Override
     public void onCreate() {
@@ -109,7 +105,7 @@ public class PreviewService extends Service {
             initLayoutParams();
         }
 
-        if (mRootView == null) {
+        if (mViewHolder == null) {
             initView();
         }
 
@@ -139,13 +135,7 @@ public class PreviewService extends Service {
     }
 
     private void initView() {
-        mRootView = LayoutInflater.from(this).inflate(R.layout.preview_window_content, null);
-        mViewContainer = mRootView.findViewById(R.id.view_container);
-        mImageView = mRootView.findViewById(R.id.image_view);
-        mButtonBar = mRootView.findViewById(R.id.button_bar);
-        mExpanded = false;
-
-        mImageView.setOnClickListener(v -> toggleExpandState());
+        mViewHolder = new ViewHolder(LayoutInflater.from(this).inflate(R.layout.preview_window_content, null));
     }
 
     private void startPreview() {
@@ -178,20 +168,15 @@ public class PreviewService extends Service {
                 if (result == null) {
                     throw new NullPointerException("Cannot decode screenshot to bitmap.");
                 }
-                result = Bitmap.createScaledBitmap(result,
-                        (int) (result.getWidth()),
-                        (int) (result.getHeight()),
-                        false);
 
                 mLoadedData = Pair.create(mImageUri, result);
             }
         }).whenCompleteAsync((res, err) -> {
-            mImageView.setImageBitmap(mLoadedData.second);
-            setImageViewExpandState(mExpanded);
-            if (mRootView.isAttachedToWindow()) {
-                mWindowManager.removeViewImmediate(mRootView);
+            mViewHolder.setImageBitmap(mLoadedData.second);
+            if (mViewHolder.getRootView().isAttachedToWindow()) {
+                mWindowManager.removeViewImmediate(mViewHolder.getRootView());
             }
-            mWindowManager.addView(mRootView, mLayoutParams);
+            mWindowManager.addView(mViewHolder.getRootView(), mLayoutParams);
         }, Executors.mainThread());
     }
 
@@ -215,7 +200,7 @@ public class PreviewService extends Service {
 
     @Override
     public void onDestroy() {
-        mWindowManager.removeViewImmediate(mRootView);
+        mWindowManager.removeViewImmediate(mViewHolder.getRootView());
         stopForeground(true);
     }
 
@@ -225,31 +210,245 @@ public class PreviewService extends Service {
         return null;
     }
 
-    private void toggleExpandState() {
-        mExpanded = !mExpanded;
-        // final AutoTransition autoTransition = new AutoTransition();
-        // autoTransition.setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime) / 2);
-        // TransitionManager.beginDelayedTransition(mViewContainer, autoTransition);
-        setImageViewExpandState(mExpanded);
-        if (mExpanded) {
-            mButtonBar.setVisibility(View.VISIBLE);
-        } else {
-            mButtonBar.setVisibility(View.GONE);
+    private static class ViewHolder {
+
+        private final View mRootView;
+        private final ImageView mImageView;
+        private final LinearLayout mViewContainer, mButtonBar;
+        private final View mEditButton, mShareButton, mDeleteButton;
+
+        private final PreviewActionForegroundDrawable mForeground;
+
+        private final ArisuGestureListener mGestureListener;
+
+        private final ColorMatrix mColorMatrix;
+        private final float[] mColorMatrixArray;
+
+        private boolean mExpanded;
+
+        private float mScale = 0.5f;
+        private float mExpandedScale = 0.8f;
+
+        private int mRawImageWidth, mRawImageHeight;
+
+        @SuppressLint("ClickableViewAccessibility")
+        ViewHolder(@NonNull View rootView) {
+            mRootView = rootView;
+            mViewContainer = mRootView.findViewById(R.id.view_container);
+            mImageView = mRootView.findViewById(R.id.image_view);
+            mButtonBar = mRootView.findViewById(R.id.button_bar);
+            mEditButton = mRootView.findViewById(R.id.edit_button);
+            mShareButton = mRootView.findViewById(R.id.share_button);
+            mDeleteButton = mRootView.findViewById(R.id.delete_button);
+            mExpanded = false;
+
+            mForeground = new PreviewActionForegroundDrawable(getContext());
+            mRootView.setForeground(mForeground);
+
+            mColorMatrix = new ColorMatrix();
+            mColorMatrixArray = new float[] {
+                    1f, 0, 0, 0, 0,
+                    0, 1f, 0, 0, 0,
+                    0, 0, 1f, 0, 0,
+                    0, 0, 0, 1f, 0
+            };
+            setColorPercent(1f);
+
+            mGestureListener = new ArisuGestureListener(this);
+            final GestureDetector gestureDetector = new GestureDetector(rootView.getContext(), mGestureListener);
+            mImageView.setOnClickListener(v -> toggleExpandState());
+            mImageView.setOnTouchListener((v, event) -> {
+                if (MotionEvent.ACTION_UP == event.getActionMasked()) {
+                    if (mGestureListener.onUp(event)) {
+                        return true;
+                    }
+                }
+                return gestureDetector.onTouchEvent(event);
+            });
         }
-    }
 
-    private void setImageViewSize(int width, int height) {
-        final ViewGroup.LayoutParams layoutParams = mImageView.getLayoutParams();
-        layoutParams.width = width;
-        layoutParams.height = height;
-        mImageView.setLayoutParams(layoutParams);
-    }
+        @NonNull
+        Context getContext() {
+            return mRootView.getContext();
+        }
 
-    private void setImageViewExpandState(boolean expanded) {
-        setImageViewSize(
-                (int) (mLoadedData.second.getWidth() * (expanded ? mExpandedScale : mScale)),
-                (int) (mLoadedData.second.getHeight() * (expanded ? mExpandedScale : mScale))
-        );
+        @NonNull
+        View getRootView() {
+            return mRootView;
+        }
+
+        void setImageBitmap(@NonNull Bitmap bitmap) {
+            mRawImageWidth = bitmap.getWidth();
+            mRawImageHeight = bitmap.getHeight();
+            mImageView.setImageBitmap(bitmap);
+            setImageViewExpandState(mExpanded);
+        }
+
+        void toggleExpandState() {
+            mExpanded = !mExpanded;
+            // final AutoTransition autoTransition = new AutoTransition();
+            // autoTransition.setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime) / 2);
+            // TransitionManager.beginDelayedTransition(mViewContainer, autoTransition);
+            setImageViewExpandState(mExpanded);
+            if (mExpanded) {
+                mButtonBar.setVisibility(View.VISIBLE);
+            } else {
+                mButtonBar.setVisibility(View.GONE);
+            }
+        }
+
+        void setImageViewSize(int width, int height) {
+            final ViewGroup.LayoutParams layoutParams = mImageView.getLayoutParams();
+            layoutParams.width = width;
+            layoutParams.height = height;
+            mImageView.setLayoutParams(layoutParams);
+        }
+
+        void setImageViewExpandState(boolean expanded) {
+            setImageViewSize(
+                    (int) (mRawImageWidth * (expanded ? mExpandedScale : mScale)),
+                    (int) (mRawImageHeight * (expanded ? mExpandedScale : mScale))
+            );
+        }
+
+        void setButtonsEnabled(boolean enabled) {
+            mEditButton.setEnabled(enabled);
+            mShareButton.setEnabled(enabled);
+            mDeleteButton.setEnabled(enabled);
+        }
+
+        void setColorPercent(float percent) {
+            float scale = percent + 1f;
+            float translate = (-0.5f * scale + 0.5f) * 255f;
+            mColorMatrixArray[0] = scale;
+            mColorMatrixArray[5 + 1] = scale;
+            mColorMatrixArray[10 + 2] = scale;
+            mColorMatrixArray[4] = translate;
+            mColorMatrixArray[5 + 4] = translate;
+            mColorMatrixArray[10 + 4] = translate;
+            mColorMatrix.set(mColorMatrixArray);
+            mColorMatrix.setSaturation(percent);
+            mImageView.setColorFilter(new ColorMatrixColorFilter(mColorMatrix));
+        }
+
+        float getColorPercent() {
+            return mColorMatrixArray[0] - 1f;
+        }
+
+        void setForegroundProgress(float percent) {
+            mForeground.setProgress(percent);
+        }
+
+        float getForegroundProgress() {
+            return mForeground.getProgress();
+        }
+
+        private static class ArisuGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+            static final float DEFAULT_DISMISS_PERCENT_THRESHOLD = 0.5f;
+            static final float DEFAULT_OPEN_PERCENT_THRESHOLD = 1f;
+
+            private static final int SCROLL_DIRECTION_UP = 0;
+            private static final int SCROLL_DIRECTION_DOWN = 1;
+
+            @IntDef({SCROLL_DIRECTION_DOWN, SCROLL_DIRECTION_UP})
+            @Retention(RetentionPolicy.SOURCE)
+            private @interface ScrollDirection {}
+
+            private final ViewHolder mParent;
+
+            private boolean isScrolling = false;
+            @ScrollDirection
+            private int scrollDirection = 0;
+            private float progress = 0f;
+
+            ArisuGestureListener(@NonNull ViewHolder parent) {
+                mParent = parent;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent downEvent,
+                                    MotionEvent currentEvent,
+                                    float distanceX, float distanceY) {
+                mParent.setButtonsEnabled(false);
+
+                isScrolling = true;
+                final float totalDistance = currentEvent.getY() - downEvent.getY();
+                final View rootView = mParent.getRootView();
+                final float lastProgress = progress;
+                if (totalDistance > 0) {
+                    // Set direction
+                    scrollDirection = SCROLL_DIRECTION_DOWN;
+
+                    // Restore irrelevant view states
+                    rootView.setTranslationX(0);
+                    mParent.setForegroundProgress(0);
+
+                    // Set up view states
+                    rootView.setTranslationY(totalDistance);
+                    progress = totalDistance / rootView.getHeight();
+                    rootView.setAlpha(1 - Math.min(progress, 0.5f) / 0.5f);
+                    mParent.setColorPercent(1 - Math.min(progress, 0.3f) / 0.3f);
+                } else {
+                    // Set direction
+                    scrollDirection = SCROLL_DIRECTION_UP;
+
+                    // Restore irrelevant view states
+                    rootView.setTranslationX(0);
+                    rootView.setTranslationY(0);
+                    rootView.setAlpha(1f);
+                    mParent.setColorPercent(1f);
+
+                    // Set up view states
+                    progress = Math.abs(totalDistance) / rootView.getHeight();
+                    mParent.setForegroundProgress(Math.min(progress, DEFAULT_OPEN_PERCENT_THRESHOLD));
+
+                    // Haptic feedback
+                    if ((progress >= DEFAULT_OPEN_PERCENT_THRESHOLD && lastProgress < DEFAULT_OPEN_PERCENT_THRESHOLD)
+                            || (progress < DEFAULT_OPEN_PERCENT_THRESHOLD
+                            && lastProgress >= DEFAULT_OPEN_PERCENT_THRESHOLD)) {
+                        mParent.getRootView().performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
+                    }
+                }
+                return true;
+            }
+
+            public boolean onUp(MotionEvent event) {
+                mParent.setButtonsEnabled(true);
+
+                final View rootView = mParent.getRootView();
+                if (isScrolling) {
+                    isScrolling = false;
+                    if (SCROLL_DIRECTION_DOWN == scrollDirection && progress >= DEFAULT_DISMISS_PERCENT_THRESHOLD) {
+                        Log.d(TAG, "Now we should dismiss the screenshot.");
+                        mParent.getContext().stopService(createStopIntent());
+                    } else if (SCROLL_DIRECTION_UP == scrollDirection && progress >= DEFAULT_OPEN_PERCENT_THRESHOLD) {
+                        Log.d(TAG, "Now we should open the screenshot.");
+                    } else {
+                        restoreViewStates();
+                    }
+                    return true;
+                }
+                return false;
+            }
+
+            private void restoreViewStates() {
+                final View rootView = mParent.getRootView();
+                final float lastColorPercent = mParent.getColorPercent();
+                final float lastForegroundProgress = mParent.getForegroundProgress();
+                rootView.animate()
+                        .translationY(0f)
+                        .alpha(1f)
+                        .setUpdateListener(animation -> {
+                            final float fraction = animation.getAnimatedFraction();
+                            mParent.setColorPercent(Math.min(1f, lastColorPercent + 1f * fraction));
+                            mParent.setForegroundProgress(Math.max(0f, lastForegroundProgress - 1f * fraction));
+                        }).start();
+                progress = 0;
+            }
+
+        }
+
     }
 
 }
