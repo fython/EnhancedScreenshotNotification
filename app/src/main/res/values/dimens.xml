@@ -12,5 +12,7 @@
     <dimen name="floating_window_corner_radius">8dp</dimen>
     <dimen name="view_icon_size">24dp</dimen>
     <dimen name="view_icon_min_margin">8dp</dimen>
+    <dimen name="view_icon_arc_radius_offset">4dp</dimen>
+    <dimen name="view_icon_arc_stroke_width">2dp</dimen>
 
 </resources>

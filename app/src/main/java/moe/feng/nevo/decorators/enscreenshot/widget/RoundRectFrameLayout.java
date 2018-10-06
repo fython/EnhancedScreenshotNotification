@@ -2,12 +2,11 @@ package moe.feng.nevo.decorators.enscreenshot.widget;
 
 import android.content.Context;
 import android.graphics.Outline;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import moe.feng.nevo.decorators.enscreenshot.R;
 
@@ -55,13 +54,9 @@ public class RoundRectFrameLayout extends FrameLayout {
 
         @Override
         public void getOutline(View view, Outline outline) {
-            outline.setRoundRect(
-                    view.getLeft(),
-                    view.getTop(),
-                    view.getRight(),
-                    view.getBottom(),
-                    mCornerRadius
-            );
+            final Rect clipPath = new Rect();
+            view.getLocalVisibleRect(clipPath);
+            outline.setRoundRect(clipPath, mCornerRadius);
         }
 
     }

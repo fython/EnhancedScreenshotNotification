@@ -13,9 +13,11 @@ import static java.lang.Math.sqrt;
 public class PreviewActionForegroundDrawable extends Drawable {
 
     private final Paint mBackgroundPaint;
+    private final Paint mIconArcPaint;
 
     private final int mIconSize;
     private final int mIconMinMargin;
+    private final int mIconArcRadiusOffset;
 
     private Drawable mIconDrawable, mArrowDrawable;
 
@@ -31,10 +33,17 @@ public class PreviewActionForegroundDrawable extends Drawable {
         mBackgroundPaint.setStyle(Paint.Style.FILL);
         mBackgroundPaint.setAntiAlias(true);
 
+        mIconArcPaint = new Paint();
+        mIconArcPaint.setColor(Color.WHITE);
+        mIconArcPaint.setStyle(Paint.Style.STROKE);
+        mIconArcPaint.setStrokeWidth(context.getResources().getDimension(R.dimen.view_icon_arc_stroke_width));
+        mIconArcPaint.setAntiAlias(true);
+
         mIconDrawable = context.getDrawable(R.drawable.ic_open_in_browser_white_24dp);
         mArrowDrawable = context.getDrawable(R.drawable.ic_keyboard_arrow_up_white_24dp);
         mIconSize = context.getResources().getDimensionPixelSize(R.dimen.view_icon_size);
         mIconMinMargin = context.getResources().getDimensionPixelSize(R.dimen.view_icon_min_margin);
+        mIconArcRadiusOffset = context.getResources().getDimensionPixelSize(R.dimen.view_icon_arc_radius_offset);
     }
 
     public void setProgress(float progress) {
@@ -56,15 +65,17 @@ public class PreviewActionForegroundDrawable extends Drawable {
         final double maxRadius = sqrt(pow(bounds.width() / 2, 2) + pow(bounds.height(), 2));
         final double currentRadius = maxRadius * mProgress;
         final int iconBottom = bounds.bottom - (int) Math.max(mIconMinMargin, (currentRadius - mIconSize) / 2);
-        mIconDrawable.setBounds(
+        final Rect iconBounds = new Rect(
                 bounds.centerX() - mIconSize / 2, iconBottom - mIconSize,
                 bounds.centerX() + mIconSize / 2, iconBottom
         );
+        mIconDrawable.setBounds(iconBounds);
         final int arrowBottom = (int) (bounds.bottom - currentRadius - mIconMinMargin / 2);
         mArrowDrawable.setBounds(
                 bounds.centerX() - mIconSize / 2, arrowBottom - mIconSize,
                 bounds.centerX() + mIconSize / 2, arrowBottom
         );
+        final float mArcProgress = Math.max(mProgress - 0.2f, 0f) / 0.8f;
         final Path path = new Path();
         path.addCircle(bounds.centerX(), bounds.bottom, (float) currentRadius, Path.Direction.CCW);
 
@@ -78,6 +89,11 @@ public class PreviewActionForegroundDrawable extends Drawable {
         // Draw round background and icon
         canvas.drawColor(mBackgroundColor);
         mIconDrawable.draw(canvas);
+        canvas.drawArc(
+                iconBounds.left - mIconArcRadiusOffset, iconBounds.top - mIconArcRadiusOffset,
+                iconBounds.right + mIconArcRadiusOffset, iconBounds.bottom + mIconArcRadiusOffset,
+                -90 + 180 * mArcProgress, 360 * mArcProgress, false, mIconArcPaint
+        );
 
         // Restore
         canvas.restore();

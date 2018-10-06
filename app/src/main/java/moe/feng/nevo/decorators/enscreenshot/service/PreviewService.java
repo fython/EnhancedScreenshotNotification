@@ -1,6 +1,5 @@
 package moe.feng.nevo.decorators.enscreenshot.service;
 
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.*;
 import android.content.ComponentName;
@@ -22,6 +21,7 @@ import androidx.annotation.Nullable;
 import moe.feng.nevo.decorators.enscreenshot.BuildConfig;
 import moe.feng.nevo.decorators.enscreenshot.R;
 import moe.feng.nevo.decorators.enscreenshot.utils.Executors;
+import moe.feng.nevo.decorators.enscreenshot.utils.IntentUtils;
 import moe.feng.nevo.decorators.enscreenshot.widget.PreviewActionForegroundDrawable;
 
 import java.io.FileNotFoundException;
@@ -121,9 +121,8 @@ public class PreviewService extends Service {
         }
         // Show at right(end)-bottom corner
         mLayoutParams.gravity = Gravity.END | Gravity.BOTTOM;
-        final int margin = getResources().getDimensionPixelSize(R.dimen.floating_window_margin);
-        mLayoutParams.x = margin;
-        mLayoutParams.y = margin;
+        mLayoutParams.x = 0;
+        mLayoutParams.y = 0;
         // FLAG_NOT_FOCUSABLE is for allowing users to touch outside of floating window.
         // FLAG_ALT_FOCUSABLE_IM is for preventing from being blocked by input method.
         mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
@@ -135,7 +134,9 @@ public class PreviewService extends Service {
     }
 
     private void initView() {
-        mViewHolder = new ViewHolder(LayoutInflater.from(this).inflate(R.layout.preview_window_content, null));
+        mViewHolder = new ViewHolder(
+                this,
+                LayoutInflater.from(this).inflate(R.layout.preview_window_content, null));
     }
 
     private void startPreview() {
@@ -212,9 +213,11 @@ public class PreviewService extends Service {
 
     private static class ViewHolder {
 
-        private final View mRootView;
+        private final PreviewService mService;
+
+        private final View mRootView, mViewContainer;
         private final ImageView mImageView;
-        private final LinearLayout mViewContainer, mButtonBar;
+        private final LinearLayout mButtonBar;
         private final View mEditButton, mShareButton, mDeleteButton;
 
         private final PreviewActionForegroundDrawable mForeground;
@@ -232,7 +235,8 @@ public class PreviewService extends Service {
         private int mRawImageWidth, mRawImageHeight;
 
         @SuppressLint("ClickableViewAccessibility")
-        ViewHolder(@NonNull View rootView) {
+        ViewHolder(@NonNull PreviewService service, @NonNull View rootView) {
+            mService = service;
             mRootView = rootView;
             mViewContainer = mRootView.findViewById(R.id.view_container);
             mImageView = mRootView.findViewById(R.id.image_view);
@@ -243,7 +247,7 @@ public class PreviewService extends Service {
             mExpanded = false;
 
             mForeground = new PreviewActionForegroundDrawable(getContext());
-            mRootView.setForeground(mForeground);
+            mViewContainer.setForeground(mForeground);
 
             mColorMatrix = new ColorMatrix();
             mColorMatrixArray = new float[] {
@@ -277,6 +281,11 @@ public class PreviewService extends Service {
             return mRootView;
         }
 
+        @NonNull
+        View getViewContainer() {
+            return mViewContainer;
+        }
+
         void setImageBitmap(@NonNull Bitmap bitmap) {
             mRawImageWidth = bitmap.getWidth();
             mRawImageHeight = bitmap.getHeight();
@@ -286,9 +295,6 @@ public class PreviewService extends Service {
 
         void toggleExpandState() {
             mExpanded = !mExpanded;
-            // final AutoTransition autoTransition = new AutoTransition();
-            // autoTransition.setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime) / 2);
-            // TransitionManager.beginDelayedTransition(mViewContainer, autoTransition);
             setImageViewExpandState(mExpanded);
             if (mExpanded) {
                 mButtonBar.setVisibility(View.VISIBLE);
@@ -374,69 +380,72 @@ public class PreviewService extends Service {
 
                 isScrolling = true;
                 final float totalDistance = currentEvent.getY() - downEvent.getY();
-                final View rootView = mParent.getRootView();
+                final View view = mParent.getRootView();
                 final float lastProgress = progress;
                 if (totalDistance > 0) {
                     // Set direction
                     scrollDirection = SCROLL_DIRECTION_DOWN;
 
                     // Restore irrelevant view states
-                    rootView.setTranslationX(0);
+                    view.setTranslationX(0);
                     mParent.setForegroundProgress(0);
 
                     // Set up view states
-                    rootView.setTranslationY(totalDistance);
-                    progress = totalDistance / rootView.getHeight();
-                    rootView.setAlpha(1 - Math.min(progress, 0.5f) / 0.5f);
+                    view.setTranslationY(totalDistance);
+                    progress = totalDistance / view.getHeight();
+                    view.setAlpha(1 - Math.min(progress, 0.5f) / 0.5f);
                     mParent.setColorPercent(1 - Math.min(progress, 0.3f) / 0.3f);
                 } else {
                     // Set direction
                     scrollDirection = SCROLL_DIRECTION_UP;
 
                     // Restore irrelevant view states
-                    rootView.setTranslationX(0);
-                    rootView.setTranslationY(0);
-                    rootView.setAlpha(1f);
+                    view.setTranslationX(0);
+                    view.setTranslationY(0);
+                    view.setAlpha(1f);
                     mParent.setColorPercent(1f);
 
                     // Set up view states
-                    progress = Math.abs(totalDistance) / rootView.getHeight();
+                    progress = Math.abs(totalDistance) / view.getHeight();
                     mParent.setForegroundProgress(Math.min(progress, DEFAULT_OPEN_PERCENT_THRESHOLD));
 
                     // Haptic feedback
                     if ((progress >= DEFAULT_OPEN_PERCENT_THRESHOLD && lastProgress < DEFAULT_OPEN_PERCENT_THRESHOLD)
                             || (progress < DEFAULT_OPEN_PERCENT_THRESHOLD
                             && lastProgress >= DEFAULT_OPEN_PERCENT_THRESHOLD)) {
-                        mParent.getRootView().performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
+                        view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
                     }
                 }
                 return true;
             }
 
-            public boolean onUp(MotionEvent event) {
+            public boolean onUp(@NonNull MotionEvent event) {
                 mParent.setButtonsEnabled(true);
 
-                final View rootView = mParent.getRootView();
                 if (isScrolling) {
                     isScrolling = false;
                     if (SCROLL_DIRECTION_DOWN == scrollDirection && progress >= DEFAULT_DISMISS_PERCENT_THRESHOLD) {
-                        Log.d(TAG, "Now we should dismiss the screenshot.");
                         mParent.getContext().stopService(createStopIntent());
                     } else if (SCROLL_DIRECTION_UP == scrollDirection && progress >= DEFAULT_OPEN_PERCENT_THRESHOLD) {
-                        Log.d(TAG, "Now we should open the screenshot.");
+                        mParent.getContext().stopService(createStopIntent());
+                        mParent.getContext().startActivity(
+                                IntentUtils.createViewIntent(mParent.mService.mImageUri)
+                                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        );
                     } else {
                         restoreViewStates();
                     }
                     return true;
                 }
+
                 return false;
             }
 
             private void restoreViewStates() {
-                final View rootView = mParent.getRootView();
+                final View view = mParent.getRootView();
                 final float lastColorPercent = mParent.getColorPercent();
                 final float lastForegroundProgress = mParent.getForegroundProgress();
-                rootView.animate()
+                view.animate()
                         .translationY(0f)
                         .alpha(1f)
                         .setUpdateListener(animation -> {
