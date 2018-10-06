@@ -32,6 +32,14 @@ public final class ScreenshotPreferences {
     @Retention(RetentionPolicy.SOURCE)
     public @interface ShareEvolveType {}
 
+    public static final int PREVIEW_TYPE_NONE = 0;
+    public static final int PREVIEW_TYPE_PIP = 1;
+    public static final int PREVIEW_TYPE_ARISU = 2;
+
+    @IntDef({ PREVIEW_TYPE_NONE, PREVIEW_TYPE_PIP, PREVIEW_TYPE_ARISU })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface PreviewType {}
+
     private static final String PREF_NAME = "screenshot";
 
     private static final String KEY_SCREENSHOT_PATH = "screenshot_path";
@@ -40,7 +48,7 @@ public final class ScreenshotPreferences {
     private static final String KEY_EDIT_ACTION_TEXT_FORMAT = "edit_action_text_format";
     private static final String KEY_SHOW_SCREENSHOTS_COUNT = "show_screenshots_count";
     private static final String KEY_SHOW_SCREENSHOT_DETAILS = "show_screenshot_details";
-    private static final String KEY_PREVIEW_FLOATING_WINDOW = "preview_floating_window";
+    private static final String KEY_PREVIEW_FLOATING_WINDOW_TYPE = "preview_floating_window_type";
     private static final String KEY_REPLACE_NOTIFICATION_WITH_PREVIEW = "replace_notification_with_preview";
     private static final String KEY_DETECT_BARCODE = "detect_barcode";
 
@@ -142,8 +150,9 @@ public final class ScreenshotPreferences {
         return mPreferences.getBoolean(KEY_SHOW_SCREENSHOT_DETAILS, false);
     }
 
-    public boolean canPreviewInFloatingWindow() {
-        return mPreferences.getBoolean(KEY_PREVIEW_FLOATING_WINDOW, false);
+    @PreviewType
+    public int getPreviewType() {
+        return mPreferences.getInt(KEY_PREVIEW_FLOATING_WINDOW_TYPE, PREVIEW_TYPE_NONE);
     }
 
     public boolean isReplaceNotificationWithPreview() {
@@ -195,8 +204,8 @@ public final class ScreenshotPreferences {
         mPreferences.put(KEY_SHOW_SCREENSHOT_DETAILS, bool);
     }
 
-    public void setPreviewInFloatingWindow(boolean bool) {
-        mPreferences.put(KEY_PREVIEW_FLOATING_WINDOW, bool);
+    public void setPreviewType(@PreviewType int type) {
+        mPreferences.put(KEY_PREVIEW_FLOATING_WINDOW_TYPE, type);
     }
 
     public void setReplaceNotificationWithPreview(boolean bool) {

@@ -217,7 +217,7 @@ public class PreferencesActivity extends Activity {
             }
 
             mPreviewInFloatingWindow.setOnPreferenceChangeListener((p, o) -> {
-                mPreferences.setPreviewInFloatingWindow((boolean) o);
+                mPreferences.setPreviewType((boolean) o ? ScreenshotPreferences.PREVIEW_TYPE_ARISU : ScreenshotPreferences.PREVIEW_TYPE_NONE);
                 mReplaceNotificationWithPreview.setEnabled((boolean) o);
                 return true;
             });
@@ -411,7 +411,7 @@ public class PreferencesActivity extends Activity {
         }
 
         private void updatePreviewInFloatingWindow() {
-            mPreviewInFloatingWindow.setChecked(mPreferences.canPreviewInFloatingWindow());
+            mPreviewInFloatingWindow.setChecked(mPreferences.getPreviewType() == ScreenshotPreferences.PREVIEW_TYPE_ARISU);
             mReplaceNotificationWithPreview.setEnabled(mPreviewInFloatingWindow.isChecked());
         }
 

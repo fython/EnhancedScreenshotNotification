@@ -316,14 +316,10 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
 
                     evolveClickIntent();
 
-                    if (mPreferences.canPreviewInFloatingWindow()
-                            && mPreferences.isReplaceNotificationWithPreview()
-                            && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                            && previewIntent != null) {
+                    if (mPreferences.getPreviewType() != ScreenshotPreferences.PREVIEW_TYPE_NONE
+                            && mPreferences.isReplaceNotificationWithPreview()) {
                         startFloatingPreviewAndMuteNotification();
                     }
-
-                    ContextCompat.startForegroundService(context, PreviewService.createStartIntent(recentShotUri));
                 }
 
                 // Set notification channel
@@ -464,26 +460,41 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
         }
 
         private void evolveClickIntent() {
-            if (mPreferences.canPreviewInFloatingWindow() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                previewIntent = new Intent(editIntent);
-                previewIntent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                previewIntent.setAction(Intent.ACTION_MAIN);
-                previewIntent.putExtra(PreviewActivity.EXTRA_NOTIFICATION_KEY, evolving.getKey());
-                if (shareActionIndex != -1) {
-                    previewIntent.putExtra(PreviewActivity.EXTRA_SHARE_INTENT,
-                            n.actions[shareActionIndex].actionIntent);
+            switch (mPreferences.getPreviewType()) {
+                case ScreenshotPreferences.PREVIEW_TYPE_PIP: {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        previewIntent = new Intent(editIntent);
+                        previewIntent.setFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                        previewIntent.setAction(Intent.ACTION_MAIN);
+                        previewIntent.putExtra(PreviewActivity.EXTRA_NOTIFICATION_KEY, evolving.getKey());
+                        if (shareActionIndex != -1) {
+                            previewIntent.putExtra(PreviewActivity.EXTRA_SHARE_INTENT,
+                                    n.actions[shareActionIndex].actionIntent);
+                        }
+                        if (deleteActionIndex != -1) {
+                            previewIntent.putExtra(PreviewActivity.EXTRA_DELETE_INTENT,
+                                    n.actions[deleteActionIndex].actionIntent);
+                        }
+                        if (editActionIndex != -1) {
+                            previewIntent.putExtra(PreviewActivity.EXTRA_EDIT_INTENT,
+                                    n.actions[editActionIndex].actionIntent);
+                        }
+                        previewIntent.setComponent(ComponentName.createRelative(context, ".PreviewActivity"));
+                        n.contentIntent = PendingIntent.getActivity(context, 0,
+                                previewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    }
+                    break;
                 }
-                if (deleteActionIndex != -1) {
-                    previewIntent.putExtra(PreviewActivity.EXTRA_DELETE_INTENT,
-                            n.actions[deleteActionIndex].actionIntent);
+                case ScreenshotPreferences.PREVIEW_TYPE_ARISU: {
+                    n.contentIntent = PendingIntentCompat.getForegroundService(context, 0,
+                            PreviewService.createStartIntent(recentShotUri, recentShot, evolving.getKey()),
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+                    break;
                 }
-                if (editActionIndex != -1) {
-                    previewIntent.putExtra(PreviewActivity.EXTRA_EDIT_INTENT,
-                            n.actions[editActionIndex].actionIntent);
+                case ScreenshotPreferences.PREVIEW_TYPE_NONE: {
+                    // Do nothing
+                    break;
                 }
-                previewIntent.setComponent(ComponentName.createRelative(context, ".PreviewActivity"));
-                n.contentIntent = PendingIntent.getActivity(context, 0,
-                        previewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             }
         }
 
@@ -648,14 +659,26 @@ public final class ScreenshotDecorator extends NevoDecoratorService {
             manager.notify(NOTIFICATION_ID_BARCODE, builder.build());
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.O)
         private void startFloatingPreviewAndMuteNotification() {
             // Avoid duplicated preview
             if (mLastPreviewedShotUri == null || !mLastPreviewedShotUri.equals(recentShotUri)) {
                 mLastPreviewedShotUri = recentShotUri;
-                previewIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                Log.d(TAG, "PreviewActivity: should be started");
-                startActivity(previewIntent);
+                switch (mPreferences.getPreviewType()) {
+                    case ScreenshotPreferences.PREVIEW_TYPE_PIP: {
+                        previewIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        Log.d(TAG, "PreviewActivity: should be started");
+                        startActivity(previewIntent);
+                        break;
+                    }
+                    case ScreenshotPreferences.PREVIEW_TYPE_ARISU: {
+                        Log.d(TAG, "PreviewService: should be started");
+                        ContextCompat.startForegroundService(context,
+                                PreviewService.createStartIntent(recentShotUri, recentShot, evolving.getKey()));
+                        break;
+                    }
+                    case ScreenshotPreferences.PREVIEW_TYPE_NONE:
+                        throw new IllegalStateException("Cannot start preview for TYPE_NONE");
+                }
             }
             n.setChannelId(CHANNEL_ID_PREVIEWED_SCREENSHOT);
         }

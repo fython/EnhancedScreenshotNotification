@@ -20,10 +20,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import moe.feng.nevo.decorators.enscreenshot.BuildConfig;
 import moe.feng.nevo.decorators.enscreenshot.R;
+import moe.feng.nevo.decorators.enscreenshot.ScreenshotPreferences;
 import moe.feng.nevo.decorators.enscreenshot.utils.Executors;
+import moe.feng.nevo.decorators.enscreenshot.utils.FileUtils;
 import moe.feng.nevo.decorators.enscreenshot.utils.IntentUtils;
 import moe.feng.nevo.decorators.enscreenshot.widget.PreviewActionForegroundDrawable;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.annotation.Retention;
@@ -39,15 +42,22 @@ public class PreviewService extends Service {
     public static final ComponentName COMPONENT_NAME =
             ComponentName.createRelative(BuildConfig.APPLICATION_ID, PreviewService.class.getName());
 
+    public static final String EXTRA_FILE = BuildConfig.APPLICATION_ID + ".extra.FILE";
+    public static final String EXTRA_NOTIFICATION_KEY = BuildConfig.APPLICATION_ID + ".extra.NOTIFICATION_KEY";
+
     public static final String ACTION_START = BuildConfig.APPLICATION_ID + ".action.START_PREVIEW";
     public static final String ACTION_STOP = BuildConfig.APPLICATION_ID + ".action.STOP_PREVIEW";
 
     private static final String TAG = PreviewService.class.getSimpleName();
 
-    public static Intent createStartIntent(@NonNull Uri imageUri) {
+    public static Intent createStartIntent(@NonNull Uri imageUri,
+                                           @NonNull File imageFile,
+                                           @Nullable String notificationKey) {
         final Intent intent = new Intent(ACTION_START);
         intent.setComponent(COMPONENT_NAME);
         intent.setData(imageUri);
+        intent.putExtra(EXTRA_FILE, imageFile);
+        intent.putExtra(EXTRA_NOTIFICATION_KEY, notificationKey);
         return intent;
     }
 
@@ -56,6 +66,8 @@ public class PreviewService extends Service {
         intent.setComponent(COMPONENT_NAME);
         return intent;
     }
+
+    private ScreenshotPreferences mPreferences;
 
     private WindowManager mWindowManager;
     private NotificationManager mNotiManager;
@@ -66,6 +78,9 @@ public class PreviewService extends Service {
     private ViewHolder mViewHolder;
 
     private Uri mImageUri;
+    private File mImageFile;
+    @Nullable
+    private String mNotificationKey;
 
     private Pair<Uri, Bitmap> mLoadedData;
 
@@ -73,6 +88,8 @@ public class PreviewService extends Service {
 
     @Override
     public void onCreate() {
+        mPreferences = new ScreenshotPreferences(this);
+
         mWindowManager = Objects.requireNonNull(getSystemService(WindowManager.class));
         mNotiManager = Objects.requireNonNull(getSystemService(NotificationManager.class));
 
@@ -137,6 +154,35 @@ public class PreviewService extends Service {
         mViewHolder = new ViewHolder(
                 this,
                 LayoutInflater.from(this).inflate(R.layout.preview_window_content, null));
+        mViewHolder.mShareButton.setOnClickListener(v -> {
+            final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType(FileUtils.getMimeTypeFromFileName(mImageFile.getName()));
+            shareIntent.putExtra(Intent.EXTRA_STREAM, mImageUri);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share_screenshot))
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            stopSelf();
+        });
+        mViewHolder.mDeleteButton.setOnClickListener(v -> {
+            mImageFile.delete();
+            stopSelf();
+        });
+        mViewHolder.mEditButton.setOnClickListener(v -> {
+            final Intent editIntent = new Intent(Intent.ACTION_EDIT);
+            editIntent.setDataAndType(mImageUri, FileUtils.getMimeTypeFromFileName(mImageFile.getName()));
+            editIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            if (mPreferences.isPreferredEditorAvailable()) {
+                Log.d(TAG, "Your preferred editor is available.");
+                editIntent.setComponent(mPreferences.getPreferredEditorComponentName()
+                        .orElseGet(() -> { throw new IllegalArgumentException("bky"); }));
+                editIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(editIntent);
+            } else {
+                startActivity(Intent.createChooser(editIntent, getString(R.string.chooser_title_edit))
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            }
+            stopSelf();
+        });
     }
 
     private void startPreview() {
@@ -187,6 +233,8 @@ public class PreviewService extends Service {
             switch (intent.getAction()) {
                 case ACTION_START: {
                     mImageUri = intent.getData();
+                    mImageFile = (File) intent.getSerializableExtra(EXTRA_FILE);
+                    mNotificationKey = intent.getStringExtra(EXTRA_NOTIFICATION_KEY);
                     startPreview();
                     break;
                 }
@@ -201,7 +249,9 @@ public class PreviewService extends Service {
 
     @Override
     public void onDestroy() {
-        mWindowManager.removeViewImmediate(mViewHolder.getRootView());
+        if (mViewHolder.getRootView().isAttachedToWindow()) {
+            mWindowManager.removeViewImmediate(mViewHolder.getRootView());
+        }
         stopForeground(true);
     }
 
