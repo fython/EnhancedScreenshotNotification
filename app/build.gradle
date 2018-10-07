@@ -7,8 +7,8 @@ android {
         // Enable Java 8 runtime (streams, optional, etc.)
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 10
-        versionName "1.8"
+        versionCode 11
+        versionName "2.0"
 
         // Please DO NOT change this string. Thanks!
         buildConfigField "String", "ALIPAY_SUPPORT_URL", "\"https://qr.alipay.com/fkx04860gv3hon55av00874\""
