@@ -109,6 +109,10 @@ public class PreferencesActivity extends Activity {
             return true;
         } else if (item.getItemId() == R.id.action_privacy_policy) {
             startActivity(IntentUtils.createViewIntent(Uri.parse(getString(R.string.action_privacy_policy_url))));
+            return true;
+        } else if (item.getItemId() == R.id.action_support) {
+            SupportUsDialog.start(this);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

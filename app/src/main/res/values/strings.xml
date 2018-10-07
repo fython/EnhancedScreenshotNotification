@@ -128,4 +128,21 @@ In Arisu mode, preview interface is provided by ourselves <b>with a smooth gestu
     <string name="switch_bar_enabled">Enabled</string>
     <string name="switch_bar_disabled">Disabled</string>
 
+    <string name="action_support_us">Support us</string>
+    <string name="support_us_dialog_title">Support us</string>
+    <string name="support_us_dialog_message_play_store"><![CDATA[
+Do you like this application (plugin) very much? You can give a 5 star on Play Store and leave your comment for rating our work.<br><br>
+We are very grateful to all those who support us!
+    ]]></string>
+    <string name="support_us_dialog_message"><![CDATA[
+Do you like this application (plugin) very much? You can give a 5 star on Play Store and leave your comment for rating our work.<br>
+If you really love this, you can also donate us via Alipay.<br><br>
+We are very grateful to all those who support us!
+    ]]></string>
+    <string name="rate_us">Rate us</string>
+    <string name="donate">Donate via Alipay</string>
+    <string name="alipay_dialog_title">Thank you~</string>
+    <string name="alipay_dialog_message">My Alipay address: fythonx\@gmail.com\nIf you have installed Alipay, you can click the right button to launch directly.</string>
+    <string name="alipay_installed_button">Yes, I have installed Alipay</string>
+
 </resources>

@@ -4,7 +4,7 @@
     <style name="Theme.Material.White" parent="Base.Theme.Material.White">
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:navigationBarDividerColor">@color/material_grey_300</item>
-        <item name="android:navigationBarColor">?android:windowBackground</item>
+        <item name="android:navigationBarColor">@color/material_grey_50</item>
     </style>
 
 </resources>

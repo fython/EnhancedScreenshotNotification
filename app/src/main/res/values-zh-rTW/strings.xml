@@ -120,4 +120,21 @@
     <string name="switch_bar_enabled">已啟用</string>
     <string name="switch_bar_disabled">已禁用</string>
 
+    <string name="action_support_us">支援我們</string>
+    <string name="support_us_dialog_title">支援我們</string>
+    <string name="support_us_dialog_message_play_store"><![CDATA[
+你喜歡這個應用程式（插件）嗎？可以在 Play 商店給予五星好評并留下你的評論來評價我們的工作。<br><br>
+我們十分感激每一個支援我們的使用者！
+    ]]></string>
+    <string name="support_us_dialog_message"><![CDATA[
+你喜歡這個應用程式（插件）嗎？可以在 Play 商店給予五星好評并留下你的評論來評價我們的工作。<br>
+如果你真的熱愛它，還可以通過支付寶捐助我們~<br><br>
+我們十分感激每一個支援我們的使用者！
+    ]]></string>
+    <string name="rate_us">評價</string>
+    <string name="donate">通過支付寶捐贈</string>
+    <string name="alipay_dialog_title">謝謝你~</string>
+    <string name="alipay_dialog_message">我的支付寶郵箱：fythonx\@gmail.com\n如果你已經安裝支付寶，還可以點按右邊的按鈕直接啟動。</string>
+    <string name="alipay_installed_button">是，我已經安裝支付寶</string>
+
 </resources>

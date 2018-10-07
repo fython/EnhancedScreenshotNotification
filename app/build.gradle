@@ -4,21 +4,56 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "moe.feng.nevo.decorators.enscreenshot"
-        // Enable Java 8 features (lambda, streams, optional, etc.)
+        // Enable Java 8 runtime (streams, optional, etc.)
         minSdkVersion 24
         targetSdkVersion 28
         versionCode 10
         versionName "1.8"
+
+        // Please DO NOT change this string. Thanks!
+        buildConfigField "String", "ALIPAY_SUPPORT_URL", "\"https://qr.alipay.com/fkx04860gv3hon55av00874\""
+
+        // Always show for test
+        buildConfigField "boolean", "SHOW_ALIPAY_ALWAYS", "true"
     }
+
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            minifyEnabled false
+        }
     }
+
+    // Multi product flavors
+    flavorDimensions "channel"
+    productFlavors {
+        playStore {
+            dimension "channel"
+            ext {
+                showAlipayAlways = false
+            }
+        }
+        other {
+            dimension "channel"
+            ext {
+                showAlipayAlways = true
+            }
+        }
+    }
+
+    // Enable Java 8 language features
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    applicationVariants.all { variant ->
+        def flavor = variant.productFlavors[0]
+        // Apply build config field from flavor.ext
+        variant.buildConfigField "boolean", "SHOW_ALIPAY_ALWAYS", "${flavor.ext.showAlipayAlways}"
     }
 }
 
@@ -29,8 +64,8 @@ dependencies {
     implementation "androidx.core:core:$androidxVersion"
     implementation "androidx.recyclerview:recyclerview:$androidxVersion"
     implementation 'net.grandcentrix.tray:tray:0.12.0'
-    implementation 'com.google.firebase:firebase-core:16.0.3'
-    implementation 'com.google.firebase:firebase-ml-vision:17.0.0'
+    implementation 'com.google.firebase:firebase-core:16.0.4'
+    implementation 'com.google.firebase:firebase-ml-vision:17.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
