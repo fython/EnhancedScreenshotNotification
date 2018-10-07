@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Base.Theme.Material.White" parent="android:Theme.Material.Light">
+        <item name="android:colorAccent">@color/material_blue_A400</item>
+        <item name="android:statusBarColor">@color/material_grey_100</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.Material.White" parent="Base.Theme.Material.White">
+
+    </style>
+
     <style name="Theme.Transparent.Full" parent="android:Theme.Material.Light">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>

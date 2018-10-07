@@ -11,6 +11,7 @@
     <string name="noti_channel_other">其他</string>
     <string name="noti_channel_permission">權限</string>
     <string name="noti_channel_assistant">幫手</string>
+    <string name="noti_channel_preview_service">預覽</string>
 
     <string name="noti_storage_permission_required_title">儲存權限請求</string>
     <string name="noti_storage_permission_required_content">爲了提供「編輯」操作給新擷圖通知，增强程式需要儲存權限。點擊這裏開始授權。</string>
@@ -29,6 +30,20 @@
     <string name="pref_preferred_editor">偏好編輯器</string>
     <string name="ask_every_time">每次都詢問</string>
     <string name="pref_preferred_editor_summary">當前選擇：%s\n\n點擊「編輯」操作直接打開你偏好的編輯器來編輯擷圖。</string>
+    <string name="pref_preview_type_none">無預覽</string>
+    <string name="pref_preview_type_pip">Android 8.0 子母畫面模式</string>
+    <string name="pref_preview_type_arisu">Arisu 模式</string>
+    <string name="pref_preview_type_pip_summary"><![CDATA[
+在子母畫面模式下，預覽介面由 Android 系統（至少 8.0）提供，<b>沒有任何自訂手勢</b>。<br><br>
+一般情況下，你可以拖動預覽到你喜歡的位置，點按切換大小。當它被展開時，你可以選取下一個操作，例如：傳送、編輯、刪除擷圖。
+    ]]></string>
+    <string name="pref_preview_type_arisu_summary"><![CDATA[
+在 Arisu 模式下，預覽介面由我們提供，<b>擁有流暢的手勢</b>但暫不支持移動位置。<br><br>
+- 向上滑動打開擷圖。<br>
+- 向下滑動關閉預覽。<br>
+- 點按切換大小，在預覽視窗展開時你可以選取下一個操作。<br>
+    ]]></string>
+    <string name="pref_preview_type_dialog_not_save">你還沒有選定任何模式選項，預覽將不會啟用。你要離開嗎？</string>
     <string name="pref_hide_icon_from_launcher">從桌面中隱藏</string>
     <string name="pref_hide_icon_from_launcher_summary">你可以從程式詳情重新進入設定介面（設定 - 所有應用程式 - 「Nevo - 增强擷圖通知」）</string>
     <string name="pref_action_after_sharing">分享後的操作</string>
@@ -97,5 +112,12 @@
     <string name="action_privacy_policy">隱私政策</string>
 
     <string name="toast_activity_not_found">沒有能處理這個操作的程式</string>
+
+    <string name="noti_preview_service_title">正在顯示擷圖預覽…</string>
+    <string name="noti_preview_service_text">你可以改變通知渠道優先級以隱藏這個通知。</string>
+    <string name="action_stop">停止</string>
+
+    <string name="switch_bar_enabled">已啟用</string>
+    <string name="switch_bar_disabled">已禁用</string>
 
 </resources>

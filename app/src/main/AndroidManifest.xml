@@ -20,7 +20,7 @@
 
         <activity android:name=".PreferencesActivity"
                   android:exported="true"
-                  android:theme="@android:style/Theme.Material.Light">
+                  android:theme="@style/Theme.Material.White">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES"/>
             </intent-filter>
@@ -39,7 +39,7 @@
         <activity android:name=".PreviewSettingsActivity"
                   android:label="@string/pref_preview_in_floating_window"
                   android:exported="false"
-                  android:theme="@android:style/Theme.Material.Light">
+                  android:theme="@style/Theme.Material.White">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>

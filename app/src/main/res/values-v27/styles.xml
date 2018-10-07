@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Material.White" parent="Base.Theme.Material.White">
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:navigationBarDividerColor">@color/material_grey_300</item>
+        <item name="android:navigationBarColor">?android:windowBackground</item>
+    </style>
+
+</resources>

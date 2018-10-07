@@ -11,6 +11,7 @@
     <string name="noti_channel_other">其它</string>
     <string name="noti_channel_permission">权限</string>
     <string name="noti_channel_assistant">助手</string>
+    <string name="noti_channel_preview_service">预览</string>
 
     <string name="noti_storage_permission_required_title">存储权限请求</string>
     <string name="noti_storage_permission_required_content">为了提供“编辑”操作给新截图通知，增强程序需要存储权限。点击这里开始授权。</string>
@@ -56,6 +57,20 @@
 
     <string name="pref_preview_in_floating_window">在悬浮窗口中预览</string>
     <string name="pref_preview_in_floating_window_summary">当前设置：%s\n\n点击截图通知以打开悬浮预览窗。</string>
+    <string name="pref_preview_type_none">无预览</string>
+    <string name="pref_preview_type_pip">Android 8.0 画中画模式</string>
+    <string name="pref_preview_type_arisu">Arisu 模式</string>
+    <string name="pref_preview_type_pip_summary"><![CDATA[
+在画中画模式下，预览界面由 Android 系统（至少 8.0）提供，<b>没有任何自定义手势</b>。<br><br>
+一般情况下，你可以拖拽预览到你喜欢的地方，点击切换大小。当它被展开时，你可以选择下一个操作，例如：分享、编辑、删除截图。
+    ]]></string>
+    <string name="pref_preview_type_arisu_summary"><![CDATA[
+在 Arisu 模式下，预览界面由我们来提供，<b>拥有流畅的手势</b>但暂不支持移动位置。<br><br>
+- 向上滑动打开截图。<br>
+- 向下滑动关闭预览。<br>
+- 点击切换大小，在预览窗口展开时你可以选择下一个操作。<br>
+    ]]></string>
+    <string name="pref_preview_type_dialog_not_save">你还没有选定任何模式选项，预览将不会启用。你要离开吗？</string>
     <string name="pref_preview_in_floating_window_summary_unsupported">你的设备不支持画中画特性或内存较低。</string>
     <string name="pref_replace_notification_with_preview">显示悬浮预览窗代替通知</string>
     <string name="pref_replace_notification_with_preview_summary">隐藏屏幕截图通知并打开一个悬浮预览窗取代它。注意：这会打断你当前画中画活动，如 Chrome、YouTube 的画中画播放。</string>
@@ -97,5 +112,12 @@
     <string name="action_privacy_policy">隐私政策</string>
 
     <string name="toast_activity_not_found">没有能处理这个操作的应用</string>
+
+    <string name="noti_preview_service_title">正在显示截图预览…</string>
+    <string name="noti_preview_service_text">你可以改变通知渠道优先级来隐藏这个通知。</string>
+    <string name="action_stop">停止</string>
+
+    <string name="switch_bar_enabled">已启用</string>
+    <string name="switch_bar_disabled">已禁用</string>
 
 </resources>
