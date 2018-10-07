@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:tools="http://schemas.android.com/tools"
+       tools:parentTag="android.widget.LinearLayout"
+       tools:orientation="horizontal"
+       tools:layout_width="match_parent"
+       tools:layout_height="@dimen/switch_bar_height"
+       tools:foreground="?android:selectableItemBackground"
+       tools:background="?android:colorAccent"
+       tools:elevation="@dimen/switch_bar_elevation"
+       tools:gravity="center_vertical">
+
+    <TextView android:id="@android:id/text1"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:layout_marginStart="72dp"
+              android:lines="1"
+              android:textAppearance="@android:style/TextAppearance.Material.Medium"
+              android:textColor="?android:textColorPrimaryInverse"
+              tools:text="Title"/>
+
+    <Switch android:id="@android:id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:background="@null"
+            android:duplicateParentState="true"
+            android:trackTint="?android:textColorSecondaryInverse"
+            android:thumbTint="?android:textColorPrimaryInverse"/>
+
+</merge>

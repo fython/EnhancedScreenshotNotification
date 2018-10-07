@@ -36,6 +36,15 @@
             </intent-filter>
         </activity-alias>
 
+        <activity android:name=".PreviewSettingsActivity"
+                  android:label="@string/pref_preview_in_floating_window"
+                  android:exported="false"
+                  android:theme="@android:style/Theme.Material.Light">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
         <activity android:name=".PermissionRequestActivity"
                   android:exported="false"
                   android:noHistory="true"

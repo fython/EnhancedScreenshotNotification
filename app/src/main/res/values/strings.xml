@@ -62,7 +62,22 @@
     <string name="go_to_google_play">Go to Google Play</string>
 
     <string name="pref_preview_in_floating_window">Preview in floating window</string>
-    <string name="pref_preview_in_floating_window_summary">Click screenshot notification to open a floating preview window.</string>
+    <string name="pref_preview_in_floating_window_summary">Current settings: %s\n\nClick screenshot notification to open a floating preview window.</string>
+    <string name="pref_preview_type_none">No preview</string>
+    <string name="pref_preview_type_pip">Android 8.0 PiP Mode</string>
+    <string name="pref_preview_type_arisu">Arisu Mode</string>
+    <string name="pref_preview_type_pip_summary"><![CDATA[
+In this mode, preview interface is provided by Android system (at least 8.0) <b>without any custom gesture</b>.<br><br>
+Generally, you can drag preview to where you like and click to toggle size. When it is expanded, you can
+choose next actions, such as sharing, deleting and editing screenshot.
+    ]]></string>
+    <string name="pref_preview_type_arisu_summary"><![CDATA[
+In Arisu mode, preview interface is provided by ourselves <b>with a smooth gesture</b> but relocating is not supported.<br><br>
+- Swipe up to open screenshot.<br>
+- Swipe down to dismiss preview window.<br>
+- Click to toggle size and you can choose next actions when preview window is expanded.<br>
+    ]]></string>
+    <string name="pref_preview_type_dialog_not_save">You haven\'t chose any mode options. Preview will not be enabled. Do you want to leave?</string>
     <string name="pref_preview_in_floating_window_summary_unsupported">Your device haven\'t supported Picture in Picture feature or it\'s in low memory.</string>
     <string name="pref_replace_notification_with_preview">Show floating preview window instead</string>
     <string name="pref_replace_notification_with_preview_summary">Hide screenshot notification and open a floating preview window instead. Caution: It will interrupt current Picture in Picture activity like Chrome, YouTube\'s PiP.</string>
@@ -109,5 +124,8 @@
     <string name="noti_preview_service_title">Screenshot preview is showing.</string>
     <string name="noti_preview_service_text">You can change notification channel priority to hide this notification.</string>
     <string name="action_stop">Stop</string>
+
+    <string name="switch_bar_enabled">Enabled</string>
+    <string name="switch_bar_disabled">Disabled</string>
 
 </resources>

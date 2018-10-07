@@ -2,11 +2,13 @@
 <resources>
 
     <!-- Flat round button with border -->
+    <eat-comment/>
     <dimen name="round_button_height">36dp</dimen>
     <dimen name="round_button_radius">18dp</dimen>
     <dimen name="round_button_border_width">1dp</dimen>
     
     <!-- Floating window design -->
+    <eat-comment/>
     <dimen name="floating_window_elevation">16dp</dimen>
     <dimen name="floating_window_margin">8dp</dimen>
     <dimen name="floating_window_corner_radius">8dp</dimen>
@@ -14,5 +16,10 @@
     <dimen name="view_icon_min_margin">8dp</dimen>
     <dimen name="view_icon_arc_radius_offset">4dp</dimen>
     <dimen name="view_icon_arc_stroke_width">2dp</dimen>
+
+    <!-- Switch bar -->
+    <eat-comment/>
+    <dimen name="switch_bar_height">56dp</dimen>
+    <dimen name="switch_bar_elevation">4dp</dimen>
 
 </resources>

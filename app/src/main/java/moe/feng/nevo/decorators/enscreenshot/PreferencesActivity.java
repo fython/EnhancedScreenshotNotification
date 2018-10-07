@@ -77,10 +77,6 @@ public class PreferencesActivity extends Activity {
                         .show();
             }
         }, Executors.mainThread());
-
-        if (!PermissionUtils.canDrawOverlays(this)) {
-            PermissionUtils.requestOverlayPermission(this, 0);
-        }
     }
 
     @Override
@@ -143,7 +139,7 @@ public class PreferencesActivity extends Activity {
         private ListPreference mEditActionTextFormat;
         private CheckBoxPreference mShowScreenshotsCount;
         private CheckBoxPreference mShowScreenshotDetails;
-        private SwitchPreference mPreviewInFloatingWindow;
+        private Preference mPreviewInFloatingWindow;
         private SwitchPreference mReplaceNotificationWithPreview;
         private SwitchPreference mDetectBarcode;
 
@@ -188,7 +184,7 @@ public class PreferencesActivity extends Activity {
             mEditActionTextFormat = (ListPreference) findPreference(KEY_EDIT_ACTION_TEXT_FORMAT);
             mShowScreenshotsCount = (CheckBoxPreference) findPreference(KEY_SHOW_SCREENSHOTS_COUNT);
             mShowScreenshotDetails = (CheckBoxPreference) findPreference(KEY_SHOW_SCREENSHOT_DETAILS);
-            mPreviewInFloatingWindow = (SwitchPreference) findPreference(KEY_PREVIEW_IN_FLOATING_WINDOW);
+            mPreviewInFloatingWindow = findPreference(KEY_PREVIEW_IN_FLOATING_WINDOW);
             mReplaceNotificationWithPreview = (SwitchPreference) findPreference(KEY_REPLACE_NOTIFICATION_WITH_PREVIEW);
             final Preference githubPref = findPreference(KEY_GITHUB_REPO);
             mDetectBarcode = (SwitchPreference) findPreference(KEY_DETECT_BARCODE);
@@ -209,16 +205,10 @@ public class PreferencesActivity extends Activity {
                 getPreferenceScreen().removePreference(findPreference("notification_settings"));
             }
 
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
-                    !getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
-                mPreviewInFloatingWindow.setEnabled(false);
-                mPreviewInFloatingWindow.setSummary(R.string.pref_preview_in_floating_window_summary_unsupported);
-                getPreferenceScreen().removePreference(mReplaceNotificationWithPreview);
-            }
-
-            mPreviewInFloatingWindow.setOnPreferenceChangeListener((p, o) -> {
-                mPreferences.setPreviewType((boolean) o ? ScreenshotPreferences.PREVIEW_TYPE_ARISU : ScreenshotPreferences.PREVIEW_TYPE_NONE);
-                mReplaceNotificationWithPreview.setEnabled((boolean) o);
+            mPreviewInFloatingWindow.setOnPreferenceClickListener(p -> {
+                final Intent intent = new Intent(getContext(), PreviewSettingsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 return true;
             });
             mReplaceNotificationWithPreview.setOnPreferenceChangeListener((p, o) -> {
@@ -281,6 +271,7 @@ public class PreferencesActivity extends Activity {
             getContext().registerReceiver(
                     mUpdateReceiver, new IntentFilter(ACTION_UPDATE_SETTINGS));
             updateUiStoragePermission();
+            updatePreviewInFloatingWindow();
             super.onResume();
         }
 
@@ -411,8 +402,27 @@ public class PreferencesActivity extends Activity {
         }
 
         private void updatePreviewInFloatingWindow() {
-            mPreviewInFloatingWindow.setChecked(mPreferences.getPreviewType() == ScreenshotPreferences.PREVIEW_TYPE_ARISU);
-            mReplaceNotificationWithPreview.setEnabled(mPreviewInFloatingWindow.isChecked());
+            final int typeResId;
+            switch (mPreferences.getPreviewType()) {
+                case ScreenshotPreferences.PREVIEW_TYPE_NONE: {
+                    typeResId = R.string.pref_preview_type_none;
+                    break;
+                }
+                case ScreenshotPreferences.PREVIEW_TYPE_PIP: {
+                    typeResId = R.string.pref_preview_type_pip;
+                    break;
+                }
+                case ScreenshotPreferences.PREVIEW_TYPE_ARISU: {
+                    typeResId = R.string.pref_preview_type_arisu;
+                    break;
+                }
+                default:
+                    throw new IllegalArgumentException();
+            }
+            mPreviewInFloatingWindow.setSummary(
+                    getString(R.string.pref_preview_in_floating_window_summary, getString(typeResId)));
+            mReplaceNotificationWithPreview.setEnabled(
+                    mPreferences.getPreviewType() != ScreenshotPreferences.PREVIEW_TYPE_NONE);
         }
 
         private void updateReplaceNotificationWithPreview() {

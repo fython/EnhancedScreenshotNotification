@@ -24,5 +24,14 @@
         <item name="android:paddingStart">12dp</item>
         <item name="android:paddingEnd">12dp</item>
     </style>
+    
+    <style name="Widget.Material.SwitchBar" parent="android:Widget.Material">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:foreground">?android:selectableItemBackground</item>
+        <item name="android:elevation">@dimen/switch_bar_elevation</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
 
 </resources>
