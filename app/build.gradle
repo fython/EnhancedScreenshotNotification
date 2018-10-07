@@ -10,6 +10,8 @@ android {
         versionCode 11
         versionName "2.0"
 
+        resConfigs "en", "zh_CN", "zh_TW"
+
         // Please DO NOT change this string. Thanks!
         buildConfigField "String", "ALIPAY_SUPPORT_URL", "\"https://qr.alipay.com/fkx04860gv3hon55av00874\""
 
@@ -20,10 +22,8 @@ android {
     buildTypes {
         release {
             minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            minifyEnabled false
         }
     }
 
