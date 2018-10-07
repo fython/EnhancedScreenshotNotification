@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import moe.feng.nevo.decorators.enscreenshot.BuildConfig;
 import moe.feng.nevo.decorators.enscreenshot.R;
+import moe.feng.nevo.decorators.enscreenshot.ScreenshotDecorator;
 import moe.feng.nevo.decorators.enscreenshot.ScreenshotPreferences;
 import moe.feng.nevo.decorators.enscreenshot.utils.Executors;
 import moe.feng.nevo.decorators.enscreenshot.utils.FileUtils;
@@ -249,6 +250,10 @@ public class PreviewService extends Service {
 
     @Override
     public void onDestroy() {
+        if (mNotificationKey != null) {
+            sendBroadcast(new Intent(ScreenshotDecorator.ACTION_CANCEL_NOTIFICATION)
+                    .putExtra("key", mNotificationKey));
+        }
         if (mViewHolder.getRootView().isAttachedToWindow()) {
             mWindowManager.removeViewImmediate(mViewHolder.getRootView());
         }
