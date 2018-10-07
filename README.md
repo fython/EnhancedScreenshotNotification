@@ -19,6 +19,7 @@ Other features:
 - Show total screenshots count
 - Show new screenshot's details
 - Hide icon from launcher
+- Recognize barcode in screenshot
 
 # Requirements
 
@@ -49,8 +50,8 @@ Other features:
 - [ ] Support older Android version
 - [x] Stable behavior when other notifications are posted from System UI
 - [x] Barcode detection
-- [ ] Material Design 2
-- [ ] Better screenshot preview experience
+- [x] Material Design 2
+- [x] Better screenshot preview experience
 
 # Contact me
 
