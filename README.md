@@ -11,10 +11,11 @@ Enhance screenshot notification then you can start to edit screenshot quickly.
 
 ![Screenshot](.github/screenshot.png)
 
-> This feature is implemented in Android P & some third-party ROMs.
+> "Edit action" feature is implemented in Android P & some third-party ROMs.
 
 Other features:
 
+- Preview the latest screenshot in floating window
 - Set preferred editor app
 - Show total screenshots count
 - Show new screenshot's details
