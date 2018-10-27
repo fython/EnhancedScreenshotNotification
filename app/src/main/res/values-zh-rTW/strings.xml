@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Nevo - 增强擷圖通知</string>
+    <string name="app_name">Nevo - 增強擷圖通知</string>
 
-    <string name="decorator_service_title">增强擷圖通知</string>
+    <string name="decorator_service_title">增強擷圖通知</string>
     <string name="decorator_service_description">將「編輯」操作帶到擷圖通知。</string>
 
     <string name="noti_channel_screenshot">擷圖</string>
@@ -14,7 +14,7 @@
     <string name="noti_channel_preview_service">預覽</string>
 
     <string name="noti_storage_permission_required_title">儲存權限請求</string>
-    <string name="noti_storage_permission_required_content">爲了提供「編輯」操作給新擷圖通知，增强程式需要儲存權限。點擊這裏開始授權。</string>
+    <string name="noti_storage_permission_required_content">為了提供「編輯」操作給新擷圖通知，增強程式需要儲存權限。點擊這裡開始授權。</string>
 
     <string name="action_edit">編輯</string>
     <string name="chooser_title_edit">選擇編輯器</string>
@@ -23,13 +23,13 @@
     <string name="category_edit_action">「編輯」操作</string>
     <string name="category_other">雜項</string>
     <string name="pref_grant_storage_permission">授予儲存權限</string>
-    <string name="pref_grant_storage_permission_summary_off">爲了提供「編輯」操作給新擷圖通知，增强程式需要儲存權限。</string>
+    <string name="pref_grant_storage_permission_summary_off">為了提供「編輯」操作給新擷圖通知，增強程式需要儲存權限。</string>
     <string name="pref_grant_storage_permission_summary_on">如果你想拒絕權限，打開應用程式詳情設定 - 權限 - 禁用「儲存空間」</string>
     <string name="pref_screenshots_store_path">擷圖儲存路徑</string>
-    <string name="pref_screenshots_store_path_summary_format">當前路徑：%s\n\n大部分擷圖都會存在「\/sdcard\/Pictures\/Screenshots」，如果預設路徑不適用你的作業系統，你可以在這裏自訂。</string>
+    <string name="pref_screenshots_store_path_summary_format">目前路徑：%s\n\n大部分擷圖都會存在「\/sdcard\/Pictures\/Screenshots」，如果預設路徑不適用你的作業系統，你可以在這裡自訂。</string>
     <string name="pref_preferred_editor">偏好編輯器</string>
     <string name="ask_every_time">每次都詢問</string>
-    <string name="pref_preferred_editor_summary">當前選擇：%s\n\n點擊「編輯」操作直接打開你偏好的編輯器來編輯擷圖。</string>
+    <string name="pref_preferred_editor_summary">目前選擇：%s\n\n點擊「編輯」操作直接打開你偏好的編輯器來編輯擷圖。</string>
     <string name="pref_preview_type_none">無預覽</string>
     <string name="pref_preview_type_pip">Android 8.0 子母畫面模式</string>
     <string name="pref_preview_type_arisu">Arisu 模式</string>
@@ -38,83 +38,83 @@
 一般情況下，你可以拖動預覽到你喜歡的位置，點按切換大小。當它被展開時，你可以選取下一個操作，例如：傳送、編輯、刪除擷圖。
     ]]></string>
     <string name="pref_preview_type_arisu_summary"><![CDATA[
-在 Arisu 模式下，預覽介面由我們提供，<b>擁有流暢的手勢</b>但暫不支持移動位置。<br><br>
+在 Arisu 模式下，預覽介面由我們提供，<b>擁有流暢的手勢</b>但暫不支援移動位置。<br><br>
 - 向上滑動打開擷圖。<br>
 - 向下滑動關閉預覽。<br>
 - 點按切換大小，在預覽視窗展開時你可以選取下一個操作。<br>
     ]]></string>
     <string name="pref_preview_type_dialog_not_save">你還沒有選定任何模式選項，預覽將不會啟用。你要離開嗎？</string>
     <string name="pref_hide_icon_from_launcher">從桌面中隱藏</string>
-    <string name="pref_hide_icon_from_launcher_summary">你可以從程式詳情重新進入設定介面（設定 - 所有應用程式 - 「Nevo - 增强擷圖通知」）</string>
+    <string name="pref_hide_icon_from_launcher_summary">你可以從程式詳情重新進入設定介面（設定 - 所有應用程式 - 「Nevo - 增強擷圖通知」）</string>
     <string name="pref_action_after_sharing">分享後的操作</string>
     <string name="action_none">無</string>
     <string name="action_dismiss_notification_at_once">立即消除通知</string>
     <string name="action_delete_screenshot">自動刪除擷圖</string>
-    <string name="pref_edit_action_text_format">自訂「編輯」操作文本格式</string>
-    <string name="pref_show_screenshots_count">顯示熒幕擷圖數量</string>
-    <string name="pref_show_screenshots_count_summary">你可以從通知瞭解你已經擷取多少張熒幕畫面。</string>
+    <string name="pref_edit_action_text_format">自訂「編輯」操作文字格式</string>
+    <string name="pref_show_screenshots_count">顯示螢幕擷圖數量</string>
+    <string name="pref_show_screenshots_count_summary">你可以從通知瞭解你已經擷取多少張螢幕畫面。</string>
     <string name="screenshots_count_format">%d 張擷圖</string>
     <string name="pref_show_screenshot_details">顯示新擷圖的詳情資料</string>
     <string name="pref_show_screenshot_details_summary">在通知中增加新擷圖的大小、解析度與類型詳情。</string>
     <string name="screenshot_details_format">類型：%1$s，解析度：%2$s，大小：%3$s。</string>
     <string name="pref_notification_settings">擷圖通知設定</string>
-    <string name="action_share_screenshot">分享熒幕畫面</string>
+    <string name="action_share_screenshot">分享螢幕畫面</string>
 
     <string name="pref_about">關於</string>
     <string name="pref_github_repo">Github 倉庫</string>
     <string name="pref_telegram_discussion">加入 Telegram 群組</string>
-    <string name="pref_telegram_discussion_summary">在群組中討論增強擷圖通知、反饋建議</string>
+    <string name="pref_telegram_discussion_summary">在群組中討論增強擷圖通知、回饋建議</string>
 
     <string name="nevolution_missing_title">需要女媧石（Nevolution）</string>
-    <string name="nevolution_missing_content">你必須在使用這個增强程式前安裝女媧石，否則我們無法增强擷圖通知。</string>
+    <string name="nevolution_missing_content">你必須在使用這個增強程式前安裝女媧石，否則我們無法增強擷圖通知。</string>
     <string name="go_to_google_play">去 Google Play</string>
 
     <string name="pref_preview_in_floating_window">在浮動視窗中預覽</string>
-    <string name="pref_preview_in_floating_window_summary">當前設定：%s\n\n點擊擷圖通知以打開浮動預覽窗。</string>
-    <string name="pref_preview_in_floating_window_summary_unsupported">你的設備不支援子母畫面特性或内存較低。</string>
+    <string name="pref_preview_in_floating_window_summary">目前設定：%s\n\n點擊擷圖通知以打開浮動預覽窗。</string>
+    <string name="pref_preview_in_floating_window_summary_unsupported">你的設備不支援子母畫面特性或記憶體較低。</string>
     <string name="pref_replace_notification_with_preview">顯示浮動預覽窗替代通知</string>
-    <string name="pref_replace_notification_with_preview_summary">隱匿熒幕擷圖通知並打開一個浮動窗口取代之。注意：這會中斷你當前子母畫面活動，如 Chrome、YouTube 的子母畫面播放。</string>
+    <string name="pref_replace_notification_with_preview_summary">隱匿螢幕擷圖通知並打開一個浮動視窗取代之。注意：這會中斷你目前子母畫面活動，如 Chrome、YouTube 的子母畫面播放。</string>
 
     <string name="noti_detect_barcode_subtitle">條碼識別</string>
     <string name="pref_detect_barcode">識別條碼/二維碼</string>
-    <string name="pref_detect_barcode_summary">協助你在熒幕擷圖的條碼中讀出文本、鏈接、聯絡人、電話等信息，并快速進行相關操作（例如在瀏覽器打開）。\n\n備註：完成擷圖前不會開始任何檢測。</string>
+    <string name="pref_detect_barcode_summary">協助你在螢幕擷圖的條碼中讀出文字、連結、聯絡人、電話等訊息，並快速進行相關操作（例如在瀏覽器打開）。\n\n備註：完成擷圖前不會開始任何檢測。</string>
     <string name="action_view_barcode">檢視條碼</string>
     <string name="noti_view_barcode_title_default">在擷圖中找到條碼</string>
     <string name="noti_view_barcode_text_multi">找到 %d 個條碼，點擊這裡選擇操作。</string>
     <string name="noti_view_barcode_text_single">內容：%s</string>
-    <string name="noti_view_barcode_title_url">在擷圖中找到鏈接</string>
+    <string name="noti_view_barcode_title_url">在擷圖中找到連結</string>
     <string name="noti_view_barcode_text_url">%s</string>
     <string name="noti_view_barcode_title_phone">在擷圖中找到電話</string>
     <string name="noti_view_barcode_text_phone">電話號碼：%s</string>
-    <string name="toast_copied">已拷貝</string>
+    <string name="toast_copied">已複製</string>
     <string name="noti_view_barcode_title_contact">在擷圖中找到聯絡人卡片</string>
     <string name="noti_view_barcode_text_contact">電話號碼：%s</string>
     <string name="action_add_to_contacts">新增到聯絡簿</string>
     <string name="undefined">未定義</string>
     <string name="barcode_type_unknown">未知類型</string>
     <string name="barcode_type_contact_info">聯絡人訊息</string>
-    <string name="barcode_type_email">電子郵箱</string>
+    <string name="barcode_type_email">電子信箱</string>
     <string name="barcode_type_isbn">ISBN</string>
     <string name="barcode_type_phone">電話</string>
     <string name="barcode_type_product">產品</string>
     <string name="barcode_type_sms">簡訊</string>
-    <string name="barcode_type_text">文本</string>
-    <string name="barcode_type_url">鏈接</string>
+    <string name="barcode_type_text">文字</string>
+    <string name="barcode_type_url">連結</string>
     <string name="barcode_type_wifi">Wi-Fi</string>
     <string name="barcode_type_geo">位置</string>
     <string name="barcode_type_calendar_event">日期事件</string>
     <string name="barcode_type_driver_license">駕照</string>
-    <string name="action_open_link">打開鏈接</string>
+    <string name="action_open_link">打開連結</string>
     <string name="action_call">呼叫</string>
 
-    <string name="action_feedback">發送反饋</string>
+    <string name="action_feedback">發送回饋</string>
     <string name="action_help">幫助</string>
     <string name="action_privacy_policy">隱私政策</string>
 
     <string name="toast_activity_not_found">沒有能處理這個操作的程式</string>
 
     <string name="noti_preview_service_title">正在顯示擷圖預覽…</string>
-    <string name="noti_preview_service_text">你可以改變通知渠道優先級以隱藏這個通知。</string>
+    <string name="noti_preview_service_text">你可以改變通知渠道優先度以隱藏這個通知。</string>
     <string name="action_stop">停止</string>
 
     <string name="switch_bar_enabled">已啟用</string>
@@ -123,18 +123,18 @@
     <string name="action_support_us">支援我們</string>
     <string name="support_us_dialog_title">支援我們</string>
     <string name="support_us_dialog_message_play_store"><![CDATA[
-你喜歡這個應用程式（插件）嗎？可以在 Play 商店給予五星好評并留下你的評論來評價我們的工作。<br><br>
+你喜歡這個應用程式（插件）嗎？可以在 Play 商店給予五星好評並留下你的評論來評價我們的工作。<br><br>
 我們十分感激每一個支援我們的使用者！
     ]]></string>
     <string name="support_us_dialog_message"><![CDATA[
-你喜歡這個應用程式（插件）嗎？可以在 Play 商店給予五星好評并留下你的評論來評價我們的工作。<br>
-如果你真的熱愛它，還可以通過支付寶捐助我們~<br><br>
+你喜歡這個應用程式（插件）嗎？可以在 Play 商店給予五星好評並留下你的評論來評價我們的工作。<br>
+如果你真的熱愛它，還可以透過支付寶捐助我們~<br><br>
 我們十分感激每一個支援我們的使用者！
     ]]></string>
     <string name="rate_us">評價</string>
-    <string name="donate">通過支付寶捐贈</string>
+    <string name="donate">透過支付寶捐贈</string>
     <string name="alipay_dialog_title">謝謝你~</string>
-    <string name="alipay_dialog_message">我的支付寶郵箱：fythonx\@gmail.com\n如果你已經安裝支付寶，還可以點按右邊的按鈕直接啟動。</string>
+    <string name="alipay_dialog_message">我的支付寶信箱：fythonx\@gmail.com\n如果你已經安裝支付寶，還可以點按右邊的按鈕直接啟動。</string>
     <string name="alipay_installed_button">是，我已經安裝支付寶</string>
 
 </resources>
