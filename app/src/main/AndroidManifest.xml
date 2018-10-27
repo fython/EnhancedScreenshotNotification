@@ -84,7 +84,7 @@
             <intent-filter android:priority="5">
                 <action android:name="com.oasisfeng.nevo.Decorator" />
             </intent-filter>
-            <meta-data android:name="packages" android:value="com.android.systemui|com.oneplus.screenshot" />
+            <meta-data android:name="packages" android:value="com.android.systemui|com.oneplus.screenshot|com.samsung.android.app.smartcapture" />
             <meta-data android:name="settings.receiver" android:value="ScreenshotDecoratorSettingsReceiver" />
         </service>
 

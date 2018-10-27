@@ -15,6 +15,7 @@ Needs other languages? [简体中文 (zh-CN)](./.github/HELP_zh_CN.md)
 3. Open Nevolution and activate this app for "System UI". If your Android ROM's screenshot notification isn't sent from these packages, please tell me for adding support:
     - `com.android.systemui` (AOSP and most ROMs)
     - `com.oneplus.screenshot` (OnePlus ROM)
+    - `com.samsung.android.app.smartcapture` (Samsung ROM)
 4. Grant storage permission for Enhanced Screenshots Notification in order that it can get your latest screenshot's path. If you don't do that, most functions cannot work.
 5. Enhanced Screenshots Notification should be working now. You can set up your preferences in ESN's settings.
 
