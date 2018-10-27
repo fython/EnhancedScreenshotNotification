@@ -13,6 +13,7 @@
 4. 打开 Nevolution 并为 “系统界面（System UI）” 激活这个应用插件。如果你的 Android 系统截图通知不是由这些包发出，请告诉我来增加支持：
     - `com.android.systemui` （AOSP 原生和大部分系统）
     - `com.oneplus.screenshot` （一加系统）
+    - `com.samsung.android.app.smartcapture` （三星系统）
 5. 为了得到你最新的截图位置，允许增强截图通知的存储权限，否则大部分功能无法工作。
 6. 现在增强截图通知应该可以运作了。你可以在设置中设置你的偏好。
 
